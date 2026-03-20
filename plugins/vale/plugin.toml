@@ -1,0 +1,28 @@
+name = "vale"
+type = "cli"
+
+[resolve]
+git-url = "https://github.com/errata-ai/vale"
+
+[platform.linux]
+exe-path = "vale"
+download-file = "vale_{version}_Linux_{arch}.tar.gz"
+checksum-file = "vale_{version}_checksums.txt"
+
+[platform.macos]
+exe-path = "vale"
+download-file = "vale_{version}_macOS_{arch}.tar.gz"
+checksum-file = "vale_{version}_checksums.txt"
+
+[platform.windows]
+exe-path = "vale.exe"
+download-file = "vale_{version}_Windows_{arch}.tar.gz"
+checksum-file = "vale_{version}_checksums.txt"
+
+[install]
+download-url = "https://github.com/errata-ai/vale/releases/download/v{version}/{download_file}"
+checksum-url = "https://github.com/errata-ai/vale/releases/download/v{version}/{checksum_file}"
+
+[install.arch]
+aarch64 = "arm64"
+x86_64 = "64-bit"

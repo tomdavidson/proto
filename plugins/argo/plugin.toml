@@ -1,0 +1,30 @@
+# A TOML plugin for argo:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+
+name = "Argo CLI"
+type = "cli"
+
+[platform.linux]
+exe-path = "argo-linux-{arch}"
+download-file = "argo-linux-{arch}.gz"
+checksum-file = "argo-workflows-cli-checksums.txt"
+
+[platform.macos]
+exe-path = "argo-darwin-{arch}"
+download-file = "argo-darwin-{arch}.gz"
+checksum-file = "argo-workflows-cli-checksums.txt"
+
+[platform.windows]
+exe-path = "argo-windows-{arch}.exe"
+download-file = "argo-windows-{arch}.exe.gz"
+checksum-file = "argo-workflows-cli-checksums.txt"
+
+[install]
+download-url = "https://github.com/argoproj/argo-workflows/releases/download/v{version}/{download_file}"
+
+[install.arch]
+aarch64 = "arm64"
+x86_64 = "amd64"
+
+[resolve]
+git-url = "https://github.com/argoproj/argo-workflows"

@@ -1,0 +1,31 @@
+actionlint = "1.7.11"
+argo = "3.6.4"
+argocd = "2.13.3"
+direnv = "2.37.1"
+dprint = "0.50.0"
+gh = "2.82.0"
+gitleaks = "8.28.0"
+shellcheck = "0.11.0"
+shfmt = "3.13.0"
+tofu = "1.11.5"
+vale = "3.9.5"
+watchexec = "2.3.2"
+
+[plugins]
+actionlint = "source:plugins/actionlint/plugin.toml"
+argo = "source:plugins/argo/plugin.toml"
+argocd = "source:plugins/argocd/plugin.toml"
+direnv = "source:plugins/direnv/plugin.toml"
+dprint = "source:plugins/dprint/plugin.toml"
+gh = "source:plugins/gh/plugin.toml"
+gitleaks = "source:plugins/gitleaks/plugin.toml"
+shellcheck = "source:plugins/shellcheck/plugin.toml"
+shfmt = "source:plugins/shfmt/plugin.toml"
+tofu = "source:plugins/tofu/plugin.toml"
+vale = "source:plugins/vale/plugin.toml"
+watchexec = "source:plugins/watchexec/plugin.toml"
+
+
+[settings]
+# disabled to avoid polluting their data with our testing / CI runs
+telemetry = false

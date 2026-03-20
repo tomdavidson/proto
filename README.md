@@ -16,4 +16,5 @@ Add the plugin to your `.prototools`:
 dprint = "0.46.2"
 
 [plugins]
-dprint = "schema:https://raw.githubusercontent.com/tomdavidson/proto-plugins/main/plugins/dprint.toml"
+dprint = "https://raw.githubusercontent.com/tomdavidson/proto/main/plugins/dprint.toml"
+```
