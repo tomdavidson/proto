@@ -8,17 +8,17 @@ type = "cli"
 [platform.linux]
 download-file = "tera-cli-{arch}-unknown-linux-gnu.tar.gz"
 archive-prefix = "tera-cli-{arch}-unknown-linux-gnu"
-bin-path = "tera"
+exe-path = "tera"
 
 [platform.macos]
 download-file = "tera-cli-{arch}-apple-darwin.tar.gz"
 archive-prefix = "tera-cli-{arch}-apple-darwin"
-bin-path = "tera"
+exe-path = "tera"
 
 [platform.windows]
 download-file = "tera-cli-{arch}-pc-windows-msvc.zip"
 archive-prefix = "tera-cli-{arch}-pc-windows-msvc"
-bin-path = "tera.exe"
+exe-path = "tera.exe"
 
 [install]
 download-url = "https://github.com/chevdor/tera-cli/releases/download/v{version}/{download_file}"
