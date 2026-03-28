@@ -7,15 +7,12 @@ type = "cli"
 
 [platform.linux]
 download-file = "dasel_linux_{arch}"
-exe-path = "dasel_linux_{arch}"
 
 [platform.macos]
 download-file = "dasel_darwin_{arch}"
-exe-path = "dasel_darwin_{arch}"
 
 [platform.windows]
 download-file = "dasel_windows_{arch}.exe"
-exe-path = "dasel_windows_{arch}.exe"
 
 [install]
 download-url = "https://github.com/TomWright/dasel/releases/download/v{version}/{download_file}"

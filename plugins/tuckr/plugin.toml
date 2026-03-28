@@ -7,11 +7,9 @@ type = "cli"
 
 [platform.linux]
 download-file = "tuckr-{arch}-linux"
-exe-path = "tuckr-{arch}-linux"
 
 [platform.windows]
 download-file = "tuckr-{arch}-windows.exe"
-exe-path = "tuckr-{arch}-windows.exe"
 
 [install]
 download-url = "https://github.com/RaphGL/Tuckr/releases/download/{version}/{download_file}"
