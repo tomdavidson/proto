@@ -1,5 +1,6 @@
 name = "actionlint"
 type = "cli"
+description = "Static checker for GitHub Actions workflow files"
 
 [resolve]
 git-url = "https://github.com/rhysd/actionlint"

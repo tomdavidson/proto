@@ -1,5 +1,6 @@
 name = "OpenTofu"
 type = "cli"
+description = "Declarative infrastructure as code tool"
 
 [platform.linux]
 checksum-file = "tofu_{version}_SHA256SUMS"

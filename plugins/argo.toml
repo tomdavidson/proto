@@ -3,6 +3,7 @@
 
 name = "Argo CLI"
 type = "cli"
+description = "CLI for Argo Workflows on Kubernetes"
 
 [platform.linux]
 exe-path = "argo-linux-{arch}"

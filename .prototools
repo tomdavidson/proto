@@ -4,8 +4,8 @@ shfmt = "3.13.0"
 vale = "3.9.5"
 
 [plugins]
-dprint = "source:plugins/dprint/plugin.toml"
-gh = "source:plugins/gh/plugin.toml"
-shfmt = "source:plugins/shfmt/plugin.toml"
-vale = "source:plugins/vale/plugin.toml"
+dprint = "source:plugins/dprint.toml"
+gh = "source:plugins/gh.toml"
+shfmt = "source:plugins/shfmt.toml"
+vale = "source:plugins/vale.toml"
 

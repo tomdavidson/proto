@@ -4,6 +4,7 @@
 
 name = "lnko"
 type = "cli"
+description = "Symlink manager for dotfiles and configuration"
 
 [platform.linux]
 download-file = "lnko-linux_{arch}"

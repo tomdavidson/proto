@@ -1,5 +1,6 @@
 name = "shfmt"
 type = "cli"
+description = "Formatter and parser for shell scripts"
 
 [resolve]
 git-url = "https://github.com/mvdan/sh"

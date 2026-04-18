@@ -4,6 +4,7 @@
 
 name = "dasel"
 type = "cli"
+description = "Query and modify data structures in JSON, TOML, YAML, and more"
 
 [platform.linux]
 download-file = "dasel_linux_{arch}"

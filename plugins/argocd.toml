@@ -3,6 +3,7 @@
 
 name = "argocd"
 type = "cli"
+description = "CLI for Argo CD declarative GitOps on Kubernetes"
 
 [platform.linux]
 download-file = "argocd-linux-{arch}"

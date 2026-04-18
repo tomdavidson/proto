@@ -4,6 +4,7 @@
 
 name = "tuckr"
 type = "cli"
+description = "Dotfile manager inspired by GNU Stow"
 
 [platform.linux]
 download-file = "tuckr-{arch}-linux"

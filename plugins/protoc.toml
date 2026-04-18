@@ -4,6 +4,7 @@
 
 name = "protoc"
 type = "cli"
+description = "Protocol Buffers compiler for generating language bindings"
 
 [platform.macos]
 download-file = "protoc-{versionMajorMinor}-osx-{arch}.zip"

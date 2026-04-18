@@ -1,5 +1,6 @@
 name = "dprint"
 type = "cli"
+description = "Pluggable code formatter for multiple languages"
 
 [metadata]
 self-upgrade-commands = ["upgrade"]

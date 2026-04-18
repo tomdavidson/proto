@@ -3,6 +3,7 @@
 
 name = "GitHub CLI"
 type = "cli"
+description = "GitHub CLI for repos, PRs, issues, and more from the terminal"
 
 [platform.linux]
 exe-path = "gh_{version}_linux_{arch}/bin/gh"

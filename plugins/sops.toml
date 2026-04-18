@@ -3,6 +3,7 @@
 
 name = "sops"
 type = "cli"
+description = "Encrypted file editor for secrets management"
 
 [platform.linux]
 download-file = "sops-v{version}.linux.{arch}"

@@ -36,6 +36,7 @@ const toPlugin = (baseUrl: string) => (file: string, raw: Raw) => {
         description: (raw.description as string) ?? '',
         pluginType: (raw.type as string) ?? 'cli',
         url,
+        projectUrl: (resolveBlock['git-url'] as string) ?? '',
         platforms: toPlatforms(platform),
         versionSource: detectVersionSource(resolveBlock),
         hasPackages: 'packages' in raw,
@@ -55,6 +56,7 @@ const toPluginEntry = (repoUrl: string) => (p: Plugin) => ({
     url: p.url,
     downloadUrl: p.url,
     codeRepository: repoUrl,
+    projectUrl: p.projectUrl || undefined,
     operatingSystem: p.platforms.length ? p.platforms : ['Linux', 'macOS', 'Windows'],
     versionSource: p.versionSource,
     hasPackages: p.hasPackages,
@@ -76,6 +78,7 @@ const CONTEXT = {
     versionSource: 'proto:versionSource',
     hasPackages: 'proto:hasPackages',
     addCommand: 'proto:addCommand',
+    projectUrl: 'proto:projectUrl',
     plugins: 'proto:plugins',
 }
 

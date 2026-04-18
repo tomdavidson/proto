@@ -1,5 +1,6 @@
 name = "watchexec"
 type = "cli"
+description = "File watcher that executes commands on changes"
 
 [resolve]
 git-url = "https://github.com/watchexec/watchexec"

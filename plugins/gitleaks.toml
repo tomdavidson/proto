@@ -1,5 +1,6 @@
 name = "Gitleaks"
 type = "cli"
+description = "Detect hardcoded secrets in git repos"
 
 [resolve]
 git-url = "https://github.com/gitleaks/gitleaks"

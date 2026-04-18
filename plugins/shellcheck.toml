@@ -1,5 +1,6 @@
 name = "ShellCheck"
 type = "cli"
+description = "Static analysis tool for shell scripts"
 
 [resolve]
 git-url = "https://github.com/koalaman/shellcheck"

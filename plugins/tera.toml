@@ -4,6 +4,7 @@
 
 name = "tera"
 type = "cli"
+description = "Command-line template renderer using Tera syntax"
 
 [platform.linux]
 download-file = "tera-cli-{arch}-unknown-linux-gnu.tar.gz"

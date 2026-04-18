@@ -3,6 +3,7 @@
 
 name = "direnv"
 type = "cli"
+description = "Load and unload environment variables per directory"
 
 [platform.linux]
 download-file = "direnv.linux-{arch}"
