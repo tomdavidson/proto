@@ -1,0 +1,107 @@
+name: Test and deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test-plugins:
+    name: Install changed plugins
+    runs-on: ubuntu-latest
+    outputs:
+      ids: ${{ steps.changes.outputs.ids }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: List changed plugin ids
+        id: changes
+        run: |
+          TARGET="${TARGET:-origin/main}"
+          git fetch --no-tags --depth=50 origin main 2>/dev/null || true
+          base=$(git merge-base --fork-point "$TARGET" HEAD 2>/dev/null \
+              || git merge-base "$TARGET" HEAD \
+              || git rev-parse HEAD~1)
+
+          ids=""
+          while IFS= read -r path; do
+            name=${path##*/}
+            ids+="${name%.toml}"$'\n'
+          done < <(git diff --name-only --diff-filter=ACMRT "$base"..HEAD -- 'plugins/*.toml')
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "$(echo "$ids" | tr -d '[:space:]')" ]; then
+            ids=$(ls plugins/*.toml | while read -r p; do n=${p##*/}; echo "${n%.toml}"; done)
+          fi
+
+          ids=$(echo "$ids" | sort -u | sed '/^$/d')
+          {
+            echo 'ids<<EOF'
+            echo "$ids"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+          echo "changed plugin ids:"
+          echo "$ids"
+
+      - name: Install proto
+        if: steps.changes.outputs.ids != ''
+        run: |
+          curl -fsSL https://moonrepo.dev/install/proto.sh | bash -s -- --yes
+          echo "$HOME/.proto/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.proto/shims" >> "$GITHUB_PATH"
+
+      - name: Generate .prototools.test
+        if: steps.changes.outputs.ids != ''
+        env:
+          CHANGED: ${{ steps.changes.outputs.ids }}
+        run: bun run scripts/build-prototools.ts
+
+      - name: Install changed plugins
+        if: steps.changes.outputs.ids != ''
+        run: |
+          mkdir -p /tmp/proto-smoke
+          cp .prototools.test /tmp/proto-smoke/.prototools
+          cd /tmp/proto-smoke
+          cat .prototools
+          proto install --all
+          proto list
+
+  build-and-deploy:
+    name: Build catalog and deploy to Pages
+    needs: test-plugins
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Build plugins.jsonld
+        run: bun run scripts/build-jsonld.ts
+
+      - name: Assemble site
+        run: |
+          cp web/index.html site/
+          cp plugins/*.toml site/
+          touch site/.nojekyll
+          ls -la site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
