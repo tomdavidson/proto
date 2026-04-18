@@ -1,0 +1,36 @@
+name = "lnko"
+type = "cli"
+
+[platform.linux]
+archs = ["x86_64", "aarch64"]
+download-file = "lnko-linux_{arch}"
+exe-path = "lnko-linux_{arch}"
+
+[platform.linux.arch]
+x86_64 = "x86_64"
+aarch64 = "arm64"
+
+[platform.macos]
+archs = ["x86_64", "aarch64"]
+download-file = "lnko-darwin_{arch}"
+exe-path = "lnko-darwin_{arch}"
+
+[platform.macos.arch]
+x86_64 = "x86_64"
+aarch64 = "arm64"
+
+[platform.windows]
+archs = ["x86_64", "aarch64"]
+download-file = "lnko-windows_{arch}.exe"
+exe-path = "lnko-windows_{arch}.exe"
+
+[platform.windows.arch]
+x86_64 = "x86_64"
+aarch64 = "arm64"
+
+[install]
+download-url = "https://github.com/luanvil/lnko/releases/download/v{version}/{download_file}"
+checksum-url = "https://github.com/luanvil/lnko/releases/download/v{version}/checksums.txt"
+
+[resolve]
+git-url = "https://github.com/luanvil/lnko"
