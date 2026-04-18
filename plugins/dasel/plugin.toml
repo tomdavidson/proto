@@ -1,0 +1,27 @@
+# A TOML plugin for dasel:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/TomWright/dasel
+
+name = "dasel"
+type = "cli"
+
+[platform.linux]
+download-file = "dasel_linux_{arch}"
+
+[platform.macos]
+download-file = "dasel_darwin_{arch}"
+
+[platform.windows]
+download-file = "dasel_windows_{arch}.exe"
+
+[install]
+download-url = "https://github.com/TomWright/dasel/releases/download/v{version}/{download_file}"
+
+[install.arch]
+aarch64 = "arm64"
+x86_64 = "amd64"
+x86 = "386"
+
+[resolve]
+git-url = "https://github.com/TomWright/dasel"
+git-tag-pattern = "^v?(\\d+\\.\\d+\\.\\d+)$"

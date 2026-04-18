@@ -1,0 +1,28 @@
+# A TOML plugin for protoc:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/protocolbuffers/protobuf
+
+name = "protoc"
+type = "cli"
+
+[platform.macos]
+download-file = "protoc-{versionMajorMinor}-osx-{arch}.zip"
+
+[platform.linux]
+download-file = "protoc-{versionMajorMinor}-linux-{arch}.zip"
+
+[platform.windows]
+download-file = "protoc-{versionMajorMinor}-win64.zip"
+
+[install]
+download-url = "https://github.com/protocolbuffers/protobuf/releases/download/v{versionMajorMinor}/{download_file}"
+
+[install.primary]
+exe-path = "bin/protoc"
+
+[install.arch]
+aarch64 = "aarch_64"
+
+[resolve]
+git-url = "https://github.com/protocolbuffers/protobuf"
+version-pattern = "v(?<major>\\d+)\\.(?<minor>\\d+)$"

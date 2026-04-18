@@ -1,0 +1,30 @@
+# A TOML plugin for lnko:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/luanvil/lnko
+
+name = "lnko"
+type = "cli"
+
+[platform.linux]
+download-file = "lnko-linux_{arch}"
+checksum-file = "checksums.txt"
+
+[platform.macos]
+download-file = "lnko-darwin_{arch}"
+checksum-file = "checksums.txt"
+
+[platform.windows]
+download-file = "lnko-windows_{arch}.exe"
+checksum-file = "checksums.txt"
+
+[install]
+download-url = "https://github.com/luanvil/lnko/releases/download/v{version}/{download_file}"
+checksum-url = "https://github.com/luanvil/lnko/releases/download/v{version}/checksums.txt"
+
+[install.arch]
+aarch64 = "arm64"
+x86_64 = "x86_64"
+
+[resolve]
+git-url = "https://github.com/luanvil/lnko"
+git-tag-pattern = "^v?(\\d+\\.\\d+\\.\\d+)$"

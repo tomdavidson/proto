@@ -1,0 +1,21 @@
+# A TOML plugin for tuckr:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/RaphGL/Tuckr
+
+name = "tuckr"
+type = "cli"
+
+[platform.linux]
+download-file = "tuckr-{arch}-linux"
+
+[platform.windows]
+download-file = "tuckr-{arch}-windows.exe"
+
+[install]
+download-url = "https://github.com/RaphGL/Tuckr/releases/download/{version}/{download_file}"
+
+[install.arch]
+x86_64 = "x86_64"
+
+[resolve]
+git-url = "https://github.com/RaphGL/Tuckr"

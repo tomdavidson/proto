@@ -1,0 +1,32 @@
+# A TOML plugin for tera-cli:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/chevdor/tera-cli
+
+name = "tera"
+type = "cli"
+
+[platform.linux]
+download-file = "tera-cli-{arch}-unknown-linux-gnu.tar.gz"
+archive-prefix = "tera-cli-{arch}-unknown-linux-gnu"
+exe-path = "tera"
+
+[platform.macos]
+download-file = "tera-cli-{arch}-apple-darwin.tar.gz"
+archive-prefix = "tera-cli-{arch}-apple-darwin"
+exe-path = "tera"
+
+[platform.windows]
+download-file = "tera-cli-{arch}-pc-windows-msvc.zip"
+archive-prefix = "tera-cli-{arch}-pc-windows-msvc"
+exe-path = "tera.exe"
+
+[install]
+download-url = "https://github.com/chevdor/tera-cli/releases/download/v{version}/{download_file}"
+
+[install.arch]
+aarch64 = "aarch64"
+x86_64 = "x86_64"
+
+[resolve]
+git-url = "https://github.com/chevdor/tera-cli"
+git-tag-pattern = "^v?(\\d+\\.\\d+\\.\\d+)$"
