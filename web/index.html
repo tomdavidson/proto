@@ -43,20 +43,10 @@
       padding: 2rem 1rem 3rem;
     }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); text-decoration: underline; }
 
-    a:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
-
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-    }
+    .wrap { max-width: 760px; margin: 0 auto; }
 
     header {
       display: flex;
@@ -73,16 +63,8 @@
       letter-spacing: -0.01em;
     }
 
-    h1 .sep {
-      color: var(--text-faint);
-      font-weight: 450;
-      margin: 0 0.25rem;
-    }
-
-    h1 .owner {
-      color: var(--text-muted);
-      font-weight: 450;
-    }
+    h1 .sep { color: var(--text-faint); font-weight: 450; margin: 0 0.25rem; }
+    h1 .owner { color: var(--text-muted); font-weight: 450; }
 
     .sub {
       color: var(--text-muted);
@@ -97,22 +79,20 @@
       margin-bottom: 1.5rem;
     }
 
+    /* If catalog grows past ~50 cards, add:
+       content-visibility: auto; contain-intrinsic-size: 240px; */
+    #plugins { display: flex; flex-direction: column; gap: 1.5rem; }
+
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r-md);
       padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
       transition: border-color 180ms ease, transform 180ms ease;
       box-shadow: var(--shadow-sm);
-      content-visibility: auto;
-      contain-intrinsic-size: 180px;
     }
 
-    .card:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
+    .card:hover { border-color: var(--accent); transform: translateY(-1px); }
 
     .card-head {
       display: flex;
@@ -134,7 +114,6 @@
       font-weight: 650;
       font-size: 1rem;
       color: var(--text);
-      text-decoration: none;
     }
 
     a.card-name:hover { color: var(--accent); }
@@ -145,11 +124,7 @@
       color: var(--text-faint);
     }
 
-    .card-meta {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+    .card-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
     .tag {
       font-size: 0.75rem;
@@ -184,10 +159,7 @@
       border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .cmd-row code {
-      flex: 1;
-      white-space: nowrap;
-    }
+    .cmd-row code { flex: 1; white-space: nowrap; }
 
     .copy-btn {
       cursor: pointer;
@@ -205,7 +177,6 @@
     }
 
     .copy-btn:hover { color: var(--accent); }
-    .copy-btn.copied { color: var(--accent); }
 
     .toml-link {
       display: inline-block;
@@ -244,19 +215,16 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-      }
-
-      html { scroll-behavior: auto; }
+      .card { transition: none; }
+      .card:hover { transform: none; }
     }
 
     @media (max-width: 520px) {
       body { padding-top: 1.5rem; }
       .card { padding: 0.9rem 1rem; }
     }
+
+    svg { display: block; }
   </style>
 </head>
 <body>
@@ -282,91 +250,142 @@
     </footer>
   </div>
 
-  <script type="module">
-    const iconCopy = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
-    const iconCheck = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+  <template id="icon-copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></template>
+  <template id="icon-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></template>
 
-    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  <script>
+    const COPY_RESET_MS = 1500
 
     const pluginsEl = document.getElementById('plugins')
     const loadingEl = document.getElementById('loading')
     const errorEl = document.getElementById('error')
     const metaEl = document.getElementById('catalog-meta')
     const dateEl = document.getElementById('catalog-date')
+    const iconCopyTpl = document.getElementById('icon-copy')
+    const iconCheckTpl = document.getElementById('icon-check')
+
+    const copyTimers = new WeakMap()
+
+    const iconNode = tpl => tpl.content.firstElementChild.cloneNode(true)
+
+    const setIcon = (btn, tpl) => btn.replaceChildren(iconNode(tpl))
 
     const formatDate = value => {
       const d = new Date(value)
-      if (Number.isNaN(d.getTime())) return ''
-      return new Intl.DateTimeFormat('en-CA', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).format(d)
+      return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10)
     }
 
-    const renderPlugin = p => `
-      <article class="card">
-        <div class="card-head">
-          <div class="card-title">
-            ${p.projectUrl ? `<a class="card-name" href="${esc(p.projectUrl)}" target="_blank" rel="noopener noreferrer">${esc(p.name)}</a>` : `<span class="card-name">${esc(p.name)}</span>`}
-            <span class="card-id">${esc(p.identifier)}</span>
-          </div>
-          <div class="card-meta">
-            ${p.pluginType ? `<span class="tag">${esc(p.pluginType)}</span>` : ''}
-            ${(p.operatingSystem || []).map(os => `<span class="tag">${esc(os)}</span>`).join('')}
-          </div>
-        </div>
-        <p class="card-desc">${esc(p.description)}</p>
-        <div class="cmd-row">
-          <code>${esc(p.addCommand)}</code>
-          <button class="copy-btn" type="button" data-cmd="${esc(p.addCommand)}" aria-label="Copy command for ${esc(p.identifier)}">${iconCopy}</button>
-        </div>
-        <a class="toml-link" href="${esc(p.downloadUrl)}" target="_blank" rel="noopener noreferrer">${esc(p.identifier)}.toml</a>
-      </article>
-    `
-
-    const wireCopyButtons = () => {
-      for (const btn of pluginsEl.querySelectorAll('.copy-btn')) {
-        btn.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(btn.dataset.cmd || '')
-            btn.classList.add('copied')
-            btn.innerHTML = iconCheck
-            setTimeout(() => {
-              btn.classList.remove('copied')
-              btn.innerHTML = iconCopy
-            }, 1500)
-          } catch {}
-        })
-      }
+    const makeEl = (tag, className, text) => {
+      const el = document.createElement(tag)
+      if (className) el.className = className
+      if (text != null) el.textContent = text
+      return el
     }
 
-    const load = async () => {
-      try {
-        const res = await fetch('./plugins.jsonld')
-        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-
-        const feed = await res.json()
-        const plugins = feed.member || feed.plugins || feed.dataFeedElement || []
-
-        loadingEl.hidden = true
-        metaEl.textContent = `${plugins.length} plugin${plugins.length === 1 ? '' : 's'}`
-
-        if (feed.dateModified) {
-          const label = formatDate(feed.dateModified)
-          if (label) dateEl.textContent = `updated ${label}`
-        }
-
-        pluginsEl.innerHTML = plugins.map(renderPlugin).join('')
-        wireCopyButtons()
-      } catch (e) {
-        loadingEl.hidden = true
-        errorEl.hidden = false
-        errorEl.textContent = `Failed to load plugins.jsonld: ${e.message}`
-      }
+    const makeNameNode = plugin => {
+      const name = plugin.name ?? plugin.identifier ?? ''
+      if (!plugin.projectUrl) return makeEl('span', 'card-name', name)
+      const a = makeEl('a', 'card-name', name)
+      a.href = plugin.projectUrl
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer'
+      return a
     }
 
-    load()
+    const makeMetaNode = plugin => {
+      const host = makeEl('div', 'card-meta')
+      if (plugin.pluginType) host.append(makeEl('span', 'tag', plugin.pluginType))
+      const osList = Array.isArray(plugin.operatingSystem) ? plugin.operatingSystem : []
+      for (const os of osList) host.append(makeEl('span', 'tag', os))
+      return host
+    }
+
+    const makeCopyButton = plugin => {
+      const btn = makeEl('button', 'copy-btn')
+      btn.type = 'button'
+      btn.dataset.cmd = plugin.addCommand ?? ''
+      btn.setAttribute('aria-label', `Copy command for ${plugin.identifier ?? ''}`)
+      setIcon(btn, iconCopyTpl)
+      return btn
+    }
+
+    const makeCmdRow = plugin => {
+      const row = makeEl('div', 'cmd-row')
+      row.append(makeEl('code', '', plugin.addCommand ?? ''), makeCopyButton(plugin))
+      return row
+    }
+
+    const makeTomlLink = plugin => {
+      const link = makeEl('a', 'toml-link', `${plugin.identifier ?? 'plugin'}.toml`)
+      link.href = plugin.downloadUrl ?? '#'
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      return link
+    }
+
+    const makeHead = plugin => {
+      const head = makeEl('div', 'card-head')
+      const title = makeEl('div', 'card-title')
+      title.append(makeNameNode(plugin), makeEl('span', 'card-id', plugin.identifier ?? ''))
+      head.append(title, makeMetaNode(plugin))
+      return head
+    }
+
+    const buildCard = plugin => {
+      const card = makeEl('article', 'card')
+      card.append(
+        makeHead(plugin),
+        makeEl('p', 'card-desc', plugin.description ?? ''),
+        makeCmdRow(plugin),
+        makeTomlLink(plugin)
+      )
+      return card
+    }
+
+    const resetCopyIcon = btn => {
+      setIcon(btn, iconCopyTpl)
+      copyTimers.delete(btn)
+    }
+
+    const markCopied = btn => {
+      setIcon(btn, iconCheckTpl)
+      const prev = copyTimers.get(btn)
+      if (prev) clearTimeout(prev)
+      copyTimers.set(btn, setTimeout(() => resetCopyIcon(btn), COPY_RESET_MS))
+    }
+
+    const onCopyClick = btn => {
+      const cmd = btn.dataset.cmd || ''
+      if (!cmd) return
+      navigator.clipboard.writeText(cmd).then(() => markCopied(btn)).catch(() => {})
+    }
+
+    pluginsEl.addEventListener('click', event => {
+      const btn = event.target.closest('.copy-btn')
+      if (btn) onCopyClick(btn)
+    })
+
+    const render = feed => {
+      const plugins = feed.plugins ?? []
+      loadingEl.hidden = true
+      metaEl.textContent = `${plugins.length} plugin${plugins.length === 1 ? '' : 's'}`
+      const label = formatDate(feed.dateModified)
+      if (label) dateEl.textContent = `updated ${label}`
+      const frag = document.createDocumentFragment()
+      for (const p of plugins) frag.append(buildCard(p))
+      pluginsEl.replaceChildren(frag)
+    }
+
+    const showError = message => {
+      loadingEl.hidden = true
+      errorEl.hidden = false
+      errorEl.textContent = `Failed to load plugins.jsonld: ${message}`
+    }
+
+    fetch('./plugins.jsonld')
+      .then(res => res.ok ? res.json() : Promise.reject(new Error(`${res.status} ${res.statusText}`)))
+      .then(render)
+      .catch(e => showError(e?.message ?? String(e)))
   </script>
 </body>
 </html>
