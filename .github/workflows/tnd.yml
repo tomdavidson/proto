@@ -94,7 +94,7 @@ jobs:
 
       - name: Assemble site
         run: |
-          cp web/index.html site/
+          cp web/* site/
           cp plugins/*.toml site/
           touch site/.nojekyll
           ls -la site/
