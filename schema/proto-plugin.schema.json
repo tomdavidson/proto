@@ -1,0 +1,540 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://json.schemastore.org/proto-plugin.json",
+  "title": "proto non-WASM plugin",
+  "description": "Schema for proto (moonrepo) non-WASM plugin files. Used by the proto plugin catalog website and suitable for SchemaStore publication.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "type",
+    "description"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable name of the tool."
+    },
+    "type": {
+      "description": "Category of tool this plugin represents.",
+      "type": "string",
+      "enum": [
+        "language",
+        "dependency-manager",
+        "package-manager",
+        "cli"
+      ]
+    },
+    "platform": {
+      "description": "Per-OS platform variations. Keys are Rust OS strings.",
+      "type": "object",
+      "additionalProperties": false,
+      "propertyNames": {
+        "enum": [
+          "linux",
+          "macos",
+          "windows",
+          "freebsd",
+          "netbsd",
+          "openbsd",
+          "dragonfly",
+          "ios",
+          "android",
+          "solaris",
+          "illumos"
+        ]
+      },
+      "patternProperties": {
+        "^(linux|macos|windows|freebsd|netbsd|openbsd|dragonfly|ios|android|solaris|illumos)$": {
+          "$ref": "#/$defs/platformMapper"
+        }
+      }
+    },
+    "install": {
+      "$ref": "#/$defs/install"
+    },
+    "packages": {
+      "$ref": "#/$defs/packages"
+    },
+    "resolve": {
+      "$ref": "#/$defs/resolve"
+    },
+    "detect": {
+      "$ref": "#/$defs/detect"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable description of the tool. Required by this catalog and website."
+    }
+  },
+  "$defs": {
+    "hostArch": {
+      "type": "string",
+      "description": "Rust HostArch name.",
+      "enum": [
+        "x86",
+        "x86_64",
+        "arm",
+        "aarch64",
+        "loongarch64",
+        "mips",
+        "mips64",
+        "powerpc",
+        "powerpc64",
+        "riscv64",
+        "s390x",
+        "sparc64"
+      ]
+    },
+    "hostLibc": {
+      "type": "string",
+      "enum": [
+        "gnu",
+        "musl",
+        "unknown"
+      ]
+    },
+    "platformMapper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "download-file"
+      ],
+      "properties": {
+        "archs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hostArch"
+          },
+          "uniqueItems": true,
+          "description": "Architectures supported for this platform. If omitted, all archs are supported."
+        },
+        "archive-prefix": {
+          "type": "string",
+          "description": "Folder inside the archive that contains the tool; stripped on unpack."
+        },
+        "archivePrefix": {
+          "type": "string",
+          "description": "Folder inside the archive that contains the tool; stripped on unpack."
+        },
+        "checksum-file": {
+          "type": "string",
+          "description": "Name of the checksum file to verify the downloaded file with."
+        },
+        "checksumFile": {
+          "type": "string",
+          "description": "Name of the checksum file to verify the downloaded file with."
+        },
+        "download-file": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the file to download. Supports {version}, {arch}, {os}, {libc} tokens."
+        },
+        "downloadFile": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the file to download. Supports {version}, {arch}, {os}, {libc} tokens."
+        },
+        "exes-dir": {
+          "type": "string",
+          "description": "Relative path to a directory of pre-installed executables."
+        },
+        "exesDir": {
+          "type": "string",
+          "description": "Relative path to a directory of pre-installed executables."
+        },
+        "exe-path": {
+          "type": "string",
+          "description": "Path to the main executable within the archive (without the prefix)."
+        },
+        "exePath": {
+          "type": "string",
+          "description": "Path to the main executable within the archive (without the prefix)."
+        },
+        "bin-path": {
+          "deprecated": true,
+          "type": "string",
+          "description": "Deprecated: use exe-path."
+        },
+        "binPath": {
+          "deprecated": true,
+          "type": "string",
+          "description": "Deprecated: use exe-path."
+        }
+      }
+    },
+    "executable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exe-path": {
+          "type": "string"
+        },
+        "exePath": {
+          "type": "string"
+        },
+        "exe-link-path": {
+          "type": "string"
+        },
+        "exeLinkPath": {
+          "type": "string"
+        },
+        "no-bin": {
+          "type": "boolean",
+          "default": false
+        },
+        "noBin": {
+          "type": "boolean",
+          "default": false
+        },
+        "no-shim": {
+          "type": "boolean",
+          "default": false
+        },
+        "noShim": {
+          "type": "boolean",
+          "default": false
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "Marks this as the primary executable when using install.exes."
+        },
+        "parent-exe-name": {
+          "type": "string",
+          "description": "Parent executable required to run this exe (e.g. 'node' for .js)."
+        },
+        "parentExeName": {
+          "type": "string",
+          "description": "Parent executable required to run this exe (e.g. 'node' for .js)."
+        },
+        "shim-before-args": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "shimBeforeArgs": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "shim-after-args": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "shimAfterArgs": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "shim-env-vars": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "shimEnvVars": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "install": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "arch": {
+          "type": "object",
+          "description": "Mapping of Rust ARCH strings to custom {arch} token values.",
+          "propertyNames": {
+            "$ref": "#/$defs/hostArch"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "exe-path": {
+          "type": "string",
+          "description": "Path to the primary executable relative to the installed tool directory. Supported as a shorthand in existing catalog plugins."
+        },
+        "exePath": {
+          "type": "string",
+          "description": "Path to the primary executable relative to the installed tool directory. JSON/YAML alias."
+        },
+        "libc": {
+          "type": "object",
+          "description": "Mapping of custom values for the {libc} token.",
+          "propertyNames": {
+            "$ref": "#/$defs/hostLibc"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "checksum-public-key": {
+          "type": "string",
+          "description": "Public key for .minisig checksum verification."
+        },
+        "checksumPublicKey": {
+          "type": "string",
+          "description": "Public key for .minisig checksum verification."
+        },
+        "checksum-url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "checksumUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "checksum-url-canary": {
+          "type": "string",
+          "format": "uri"
+        },
+        "checksumUrlCanary": {
+          "type": "string",
+          "format": "uri"
+        },
+        "download-url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "downloadUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "download-url-canary": {
+          "type": "string",
+          "format": "uri"
+        },
+        "downloadUrlCanary": {
+          "type": "string",
+          "format": "uri"
+        },
+        "primary": {
+          "$ref": "#/$defs/executable"
+        },
+        "secondary": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/executable"
+          }
+        },
+        "exes": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/executable"
+          },
+          "description": "Map of executable name to executable config. Newer model for multi-exe tools."
+        },
+        "no-bin": {
+          "type": "boolean"
+        },
+        "noBin": {
+          "type": "boolean"
+        },
+        "no-shim": {
+          "type": "boolean"
+        },
+        "noShim": {
+          "type": "boolean"
+        },
+        "unpack": {
+          "type": "boolean",
+          "description": "Catalog-supported extension controlling unpack behavior for downloaded assets."
+        }
+      }
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "globals-lookup-dirs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Directories where global binaries are stored. Supports $ENV_VAR interpolation."
+        },
+        "globalsLookupDirs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Directories where global binaries are stored. Supports $ENV_VAR interpolation."
+        },
+        "globals-prefix": {
+          "type": "string",
+          "description": "Prefix applied to global package names (e.g. 'cargo-')."
+        },
+        "globalsPrefix": {
+          "type": "string",
+          "description": "Prefix applied to global package names (e.g. 'cargo-')."
+        }
+      }
+    },
+    "resolve": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "type": "object",
+          "description": "Mapping of alias name to version spec.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Explicit list of known versions."
+        },
+        "version-pattern": {
+          "type": "string",
+          "description": "Rust regex with named groups (major|year, minor|month, patch|day, pre, build) used to parse versions."
+        },
+        "versionPattern": {
+          "type": "string",
+          "description": "Rust regex with named groups (major|year, minor|month, patch|day, pre, build) used to parse versions."
+        },
+        "manifest-url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "manifestUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "manifest-version-key": {
+          "type": "string",
+          "default": "version"
+        },
+        "manifestVersionKey": {
+          "type": "string",
+          "default": "version"
+        },
+        "git-url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "gitUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "git-tag-pattern": {
+          "type": "string"
+        },
+        "gitTagPattern": {
+          "type": "string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "git-url"
+          ]
+        },
+        {
+          "required": [
+            "gitUrl"
+          ]
+        },
+        {
+          "required": [
+            "manifest-url"
+          ]
+        },
+        {
+          "required": [
+            "manifestUrl"
+          ]
+        },
+        {
+          "required": [
+            "versions"
+          ]
+        }
+      ]
+    },
+    "detect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version-files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Files whose contents are treated as the version string."
+        },
+        "versionFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Files whose contents are treated as the version string."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "self-upgrade-commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selfUpgradeCommands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

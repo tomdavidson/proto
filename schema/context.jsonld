@@ -1,0 +1,63 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "proto": "https://tomdavidson.github.io/proto/vocab#",
+    "PluginCatalog": "proto:PluginCatalog",
+    "PluginEntry": "proto:PluginEntry",
+    "PluginType": "proto:PluginType",
+    "VersionSource": "proto:VersionSource",
+    "name": "schema:name",
+    "description": "schema:description",
+    "identifier": "schema:identifier",
+    "url": {
+      "@id": "schema:url",
+      "@type": "@id"
+    },
+    "downloadUrl": {
+      "@id": "schema:downloadUrl",
+      "@type": "@id"
+    },
+    "codeRepository": {
+      "@id": "schema:codeRepository",
+      "@type": "@id"
+    },
+    "operatingSystem": "schema:operatingSystem",
+    "dateModified": {
+      "@id": "schema:dateModified",
+      "@type": "xsd:dateTime"
+    },
+    "conformsTo": {
+      "@id": "schema:conformsTo",
+      "@type": "@id"
+    },
+    "plugins": {
+      "@id": "proto:plugins",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "pluginType": {
+      "@id": "proto:pluginType",
+      "@type": "@id"
+    },
+    "versionSource": {
+      "@id": "proto:versionSource",
+      "@type": "@id"
+    },
+    "hasPackages": {
+      "@id": "proto:hasPackages",
+      "@type": "xsd:boolean"
+    },
+    "addCommand": "proto:addCommand",
+    "projectUrl": {
+      "@id": "proto:projectUrl",
+      "@type": "@id"
+    },
+    "pluginFile": {
+      "@id": "proto:pluginFile",
+      "@type": "@id"
+    }
+  }
+}

@@ -1,11 +1,9 @@
 dprint = "0.50.0"
-gh = "2.82.0"
 shfmt = "3.13.0"
-vale = "3.9.5"
+taplo = "0.10.0"
 
 [plugins]
 dprint = "source:plugins/dprint.toml"
-gh = "source:plugins/gh.toml"
 shfmt = "source:plugins/shfmt.toml"
-vale = "source:plugins/vale.toml"
+taplo = "source:plugins/taplo.toml"
 

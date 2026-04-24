@@ -1,0 +1,164 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "proto": "https://tomdavidson.github.io/proto/vocab#"
+  },
+  "@graph": [
+    {
+      "@id": "proto:PluginCatalog",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Plugin catalog",
+      "rdfs:comment": "A published catalog of proto plugin entries."
+    },
+    {
+      "@id": "proto:PluginEntry",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Plugin entry",
+      "rdfs:comment": "A catalog entry describing a published proto plugin definition file.",
+      "rdfs:subClassOf": {
+        "@id": "schema:CreativeWork"
+      }
+    },
+    {
+      "@id": "proto:PluginType",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Plugin type",
+      "rdfs:comment": "A controlled concept describing the high-level proto plugin category."
+    },
+    {
+      "@id": "proto:VersionSource",
+      "@type": "rdfs:Class",
+      "rdfs:label": "Version source",
+      "rdfs:comment": "A controlled concept describing how available plugin versions are resolved."
+    },
+    {
+      "@id": "proto:plugins",
+      "@type": "rdf:Property",
+      "rdfs:label": "plugins",
+      "rdfs:comment": "Links a plugin catalog to its plugin entries.",
+      "rdfs:domain": {
+        "@id": "proto:PluginCatalog"
+      },
+      "rdfs:range": {
+        "@id": "proto:PluginEntry"
+      }
+    },
+    {
+      "@id": "proto:pluginType",
+      "@type": "rdf:Property",
+      "rdfs:label": "plugin type",
+      "rdfs:comment": "Links a plugin entry to a controlled plugin type concept.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "proto:PluginType"
+      }
+    },
+    {
+      "@id": "proto:versionSource",
+      "@type": "rdf:Property",
+      "rdfs:label": "version source",
+      "rdfs:comment": "Links a plugin entry to a controlled concept describing how versions are resolved.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "proto:VersionSource"
+      }
+    },
+    {
+      "@id": "proto:hasPackages",
+      "@type": "rdf:Property",
+      "rdfs:label": "has packages",
+      "rdfs:comment": "Whether the plugin exposes package-manager style package metadata.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "xsd:boolean"
+      }
+    },
+    {
+      "@id": "proto:addCommand",
+      "@type": "rdf:Property",
+      "rdfs:label": "add command",
+      "rdfs:comment": "A ready-to-run proto command to add the plugin.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "xsd:string"
+      }
+    },
+    {
+      "@id": "proto:projectUrl",
+      "@type": "rdf:Property",
+      "rdfs:label": "project URL",
+      "rdfs:comment": "Canonical upstream project URL for the tool described by the plugin entry.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "schema:URL"
+      }
+    },
+    {
+      "@id": "proto:pluginFile",
+      "@type": "rdf:Property",
+      "rdfs:label": "plugin file",
+      "rdfs:comment": "URL of the raw plugin definition file described by the catalog entry.",
+      "rdfs:domain": {
+        "@id": "proto:PluginEntry"
+      },
+      "rdfs:range": {
+        "@id": "schema:URL"
+      }
+    },
+    {
+      "@id": "proto:cli",
+      "@type": "proto:PluginType",
+      "rdfs:label": "CLI",
+      "rdfs:comment": "A general command-line tool plugin."
+    },
+    {
+      "@id": "proto:language",
+      "@type": "proto:PluginType",
+      "rdfs:label": "Language",
+      "rdfs:comment": "A language runtime or compiler plugin."
+    },
+    {
+      "@id": "proto:dependency-manager",
+      "@type": "proto:PluginType",
+      "rdfs:label": "Dependency manager",
+      "rdfs:comment": "A dependency or package manager plugin."
+    },
+    {
+      "@id": "proto:git",
+      "@type": "proto:VersionSource",
+      "rdfs:label": "Git tags",
+      "rdfs:comment": "Versions are resolved from source control tags."
+    },
+    {
+      "@id": "proto:manifest",
+      "@type": "proto:VersionSource",
+      "rdfs:label": "Manifest",
+      "rdfs:comment": "Versions are resolved from a JSON manifest."
+    },
+    {
+      "@id": "proto:static",
+      "@type": "proto:VersionSource",
+      "rdfs:label": "Static list",
+      "rdfs:comment": "Versions are resolved from an explicit static list."
+    },
+    {
+      "@id": "proto:unknown",
+      "@type": "proto:VersionSource",
+      "rdfs:label": "Unknown",
+      "rdfs:comment": "Version resolution strategy is not known or not expressed."
+    }
+  ]
+}

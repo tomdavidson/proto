@@ -2,7 +2,9 @@ name: Test and deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -10,57 +12,112 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   test-plugins:
     name: Install changed plugins
     runs-on: ubuntu-latest
+    concurrency:
+      group: test-${{ github.ref }}
+      cancel-in-progress: true
     outputs:
       ids: ${{ steps.changes.outputs.ids }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install proto
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Cache .proto toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.proto
+          key: proto-${{ runner.os }}-${{ hashFiles('.prototools') }}
+          restore-keys: |
+            proto-${{ runner.os }}-
+
+      - name: Install proto-managed tools (bun, taplo)
+        run: proto install
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
 
       - name: List changed plugin ids
         id: changes
+        shell: bash
         run: |
+          set -euo pipefail
+
           TARGET="${TARGET:-origin/main}"
           git fetch --no-tags --depth=50 origin main 2>/dev/null || true
           base=$(git merge-base --fork-point "$TARGET" HEAD 2>/dev/null \
-              || git merge-base "$TARGET" HEAD \
+              || git merge-base "$TARGET" HEAD 2>/dev/null \
               || git rev-parse HEAD~1)
+
+          strip_ext() {
+            local name="${1##*/}"
+            printf '%s\n' "${name%.*}"
+          }
 
           ids=""
           while IFS= read -r path; do
-            name=${path##*/}
-            ids+="${name%.toml}"$'\n'
-          done < <(git diff --name-only --diff-filter=ACMRT "$base"..HEAD -- 'plugins/*.toml')
+            [ -z "$path" ] && continue
+            ids+="$(strip_ext "$path")"$'\n'
+          done < <(git diff --name-only --diff-filter=ACMRT "$base"..HEAD -- \
+            'plugins/*.toml' 'plugins/*.json' 'plugins/*.yaml' 'plugins/*.yml')
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "$(echo "$ids" | tr -d '[:space:]')" ]; then
-            ids=$(ls plugins/*.toml | while read -r p; do n=${p##*/}; echo "${n%.toml}"; done)
+          if { [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+               || [ "${{ github.event_name }}" = "pull_request" ]; } \
+             && [ -z "$(printf '%s' "$ids" | tr -d '[:space:]')" ]; then
+            for p in plugins/*; do
+              [ -f "$p" ] || continue
+              ids+="$(strip_ext "$p")"$'\n'
+            done
           fi
 
-          ids=$(echo "$ids" | sort -u | sed '/^$/d')
+          ids=$(printf '%s' "$ids" | sort -u | sed '/^$/d')
           {
             echo 'ids<<EOF'
-            echo "$ids"
+            printf '%s\n' "$ids"
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
-          echo "changed plugin ids:"
-          echo "$ids"
 
-      - name: Install proto
+          echo "changed plugin ids:"
+          printf '%s\n' "$ids"
+
+      - name: Schema check (TOML)
+        if: steps.changes.outputs.ids != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          if compgen -G "plugins/*.toml" > /dev/null; then
+            taplo check \
+              --schema "file://${{ github.workspace }}/schema/proto-plugin.schema.json" \
+              plugins/*.toml
+          else
+            echo "no TOML plugins to validate"
+          fi
+
+      - name: Schema check (YAML)
         if: steps.changes.outputs.ids != ''
         run: |
-          curl -fsSL https://moonrepo.dev/install/proto.sh | bash -s -- --yes
-          echo "$HOME/.proto/bin" >> "$GITHUB_PATH"
-          echo "$HOME/.proto/shims" >> "$GITHUB_PATH"
+          if compgen -G "plugins/*.y*ml" > /dev/null; then
+            bunx @jirutka/ajv-cli validate \
+              -s schema/proto-plugin.schema.json \
+              -d "plugins/*.{yaml,yml}" \
+              --spec=draft7 \
+              -c ajv-formats
+          else
+            echo "no YAML plugins to validate"
+          fi
+
+      - name: Build plugin catalog
+        if: steps.changes.outputs.ids != ''
+        run: bun run scripts/build-jsonld.ts
 
       - name: Generate .prototools.test
         if: steps.changes.outputs.ids != ''
@@ -71,37 +128,68 @@ jobs:
       - name: Install changed plugins
         if: steps.changes.outputs.ids != ''
         run: |
+          set -euo pipefail
           mkdir -p /tmp/proto-smoke
           cp .prototools.test /tmp/proto-smoke/.prototools
           cd /tmp/proto-smoke
           cat .prototools
-          proto install --all
+          proto install -y -f
           proto list
 
   build-and-deploy:
     name: Build catalog and deploy to Pages
     needs: test-plugins
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install proto
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Cache .proto toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.proto
+          key: proto-${{ runner.os }}-${{ hashFiles('.prototools') }}
+          restore-keys: |
+            proto-${{ runner.os }}-
+
+      - name: Install proto-managed tools (bun)
+        run: proto install
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
 
       - name: Build plugins.jsonld
         run: bun run scripts/build-jsonld.ts
 
       - name: Assemble site
         run: |
-          cp web/* site/
-          cp plugins/*.toml site/
+          set -euo pipefail
+          cp -r web/. site/
+          cp -r schema site/
+          cp plugins/* site/
           touch site/.nojekyll
-          ls -la site/
+          ls -la site site/schema
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - id: deployment
+
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
