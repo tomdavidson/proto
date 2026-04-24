@@ -1,0 +1,27 @@
+name = "taplo"
+type = "cli"
+description = "TOML toolkit with formatter, linter, and schema-aware validation"
+
+[platform.linux]
+download-file = "taplo-linux-{arch}.gz"
+exe-path = "taplo-linux-{arch}"
+
+[platform.macos]
+download-file = "taplo-darwin-{arch}.gz"
+exe-path = "taplo-darwin-{arch}"
+
+[platform.windows]
+download-file = "taplo-windows-{arch}.zip"
+exe-path = "taplo.exe"
+
+[install]
+download-url = "https://github.com/tamasfe/taplo/releases/download/{version}/{download_file}"
+
+[install.arch]
+x86 = "x86"
+x86_64 = "x86_64"
+aarch64 = "aarch64"
+
+[resolve]
+git-url = "https://github.com/tamasfe/taplo"
+git-tag-pattern = "^v?(\\d+\\.\\d+\\.\\d+)$"
