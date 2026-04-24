@@ -1,0 +1,21 @@
+name = "Bats File"
+type = "cli"
+description = "bats-file provides filesystem assertion helpers (assert_file_exists, assert_symlink_to, assert_dir_exists, etc.) for Bats"
+
+[platform.linux]
+archive-prefix = "bats-file-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.macos]
+archive-prefix = "bats-file-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.windows]
+archive-prefix = "bats-file-{version}"
+download-file = "v{version}.tar.gz"
+
+[install]
+download-url = "https://github.com/bats-core/bats-file/archive/refs/tags/{download_file}"
+
+[resolve]
+git-url = "https://github.com/bats-core/bats-file"

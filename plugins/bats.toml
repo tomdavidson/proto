@@ -2,20 +2,16 @@ name = "Bats"
 type = "cli"
 description = "Bats (Bash Automated Testing System) is a TAP-compliant testing framework for Bash"
 
-
 [platform.linux]
 archive-prefix = "bats-core-{version}"
-exe-path = "bin/bats"
 download-file = "v{version}.tar.gz"
 
 [platform.macos]
 archive-prefix = "bats-core-{version}"
-exe-path = "bin/bats"
 download-file = "v{version}.tar.gz"
 
 [platform.windows]
 archive-prefix = "bats-core-{version}"
-exe-path = "bin/bats"
 download-file = "v{version}.tar.gz"
 
 [install]
@@ -24,6 +20,7 @@ download-url = "https://github.com/bats-core/bats-core/archive/refs/tags/{downlo
 [install.exes.bats]
 exe-path = "bin/bats"
 primary = true
+shim-env-vars = { BATS_LIB_PATH = "${PROTO_HOME}/tools/bats-support/latest:${PROTO_HOME}/tools/bats-assert/latest:${PROTO_HOME}/tools/bats-file/latest" }
 
 [resolve]
 git-url = "https://github.com/bats-core/bats-core"

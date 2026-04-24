@@ -1,0 +1,21 @@
+name = "Bats Support"
+type = "cli"
+description = "bats-support provides the output/error formatting library that bats-assert and bats-file build on"
+
+[platform.linux]
+archive-prefix = "bats-support-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.macos]
+archive-prefix = "bats-support-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.windows]
+archive-prefix = "bats-support-{version}"
+download-file = "v{version}.tar.gz"
+
+[install]
+download-url = "https://github.com/bats-core/bats-support/archive/refs/tags/{download_file}"
+
+[resolve]
+git-url = "https://github.com/bats-core/bats-support"

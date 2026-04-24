@@ -1,0 +1,21 @@
+name = "Bats Assert"
+type = "cli"
+description = "bats-assert provides assertion helpers (assert_success, assert_output, refute_output, etc.) for Bats"
+
+[platform.linux]
+archive-prefix = "bats-assert-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.macos]
+archive-prefix = "bats-assert-{version}"
+download-file = "v{version}.tar.gz"
+
+[platform.windows]
+archive-prefix = "bats-assert-{version}"
+download-file = "v{version}.tar.gz"
+
+[install]
+download-url = "https://github.com/bats-core/bats-assert/archive/refs/tags/{download_file}"
+
+[resolve]
+git-url = "https://github.com/bats-core/bats-assert"
