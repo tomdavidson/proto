@@ -134,7 +134,6 @@ jobs:
           cd /tmp/proto-smoke
           cat .prototools
           proto install -y -f
-          proto list
 
   build-and-deploy:
     name: Build catalog and deploy to Pages
