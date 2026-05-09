@@ -130,7 +130,8 @@ jobs:
           cp .prototools.test /tmp/proto-smoke/.prototools
           cd /tmp/proto-smoke
           cat .prototools
-          proto install -y -f
+          proto install -y
+          proto list
 
   build-and-deploy:
     name: Build catalog and deploy to Pages
