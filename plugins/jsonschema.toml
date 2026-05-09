@@ -1,0 +1,24 @@
+# plugins/jsonschema.toml
+# Proto TOML plugin for the jsonschema CLI (Rust crate)
+# Releases: https://github.com/Stranger6667/jsonschema/releases
+
+name = "jsonschema"
+type = "cli"
+description = "Fast JSON Schema validator with a CLI — supports drafts 4, 6, 7, 2019-09, and 2020-12"
+
+[platform.linux]
+download-file = "jsonschema-cli-{arch}-unknown-linux-gnu.tar.gz"
+
+[platform.macos]
+download-file = "jsonschema-cli-{arch}-apple-darwin.tar.gz"
+
+[install]
+download-url = "https://github.com/Stranger6667/jsonschema/releases/download/cli-v{version}/{download_file}"
+
+[install.arch]
+x86_64  = "x86_64"
+aarch64 = "aarch64"
+
+[resolve]
+git-url    = "https://github.com/Stranger6667/jsonschema"
+tag-prefix = "cli-v"
