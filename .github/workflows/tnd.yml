@@ -40,7 +40,7 @@ jobs:
           restore-keys: |
             proto-${{ runner.os }}-
 
-      - name: Install proto-managed tools
+      - name: Install proto-managed tools (bun, taplo)
         run: proto install
 
       - name: List changed plugin ids
@@ -130,7 +130,7 @@ jobs:
           cp .prototools.test /tmp/proto-smoke/.prototools
           cd /tmp/proto-smoke
           cat .prototools
-          proto install -y -f
+          proto install -y
           proto list
 
   build-and-deploy:
@@ -161,7 +161,7 @@ jobs:
           restore-keys: |
             proto-${{ runner.os }}-
 
-      - name: Install proto-managed tools
+      - name: Install proto-managed tools (bun)
         run: proto install
 
       - name: Build plugins.jsonld
