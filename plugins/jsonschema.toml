@@ -1,6 +1,9 @@
 # plugins/jsonschema.toml
 # Proto TOML plugin for the jsonschema CLI (Rust crate)
 # Releases: https://github.com/Stranger6667/jsonschema/releases
+#
+# The repo is a monorepo; CLI releases are tagged cli-v{version}.
+# git-tag-pattern strips the prefix and captures semver groups.
 
 name = "jsonschema"
 type = "cli"
@@ -20,5 +23,5 @@ x86_64  = "x86_64"
 aarch64 = "aarch64"
 
 [resolve]
-git-url    = "https://github.com/Stranger6667/jsonschema"
-tag-prefix = "cli-v"
+git-url         = "https://github.com/Stranger6667/jsonschema"
+git-tag-pattern = "^cli-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)"
