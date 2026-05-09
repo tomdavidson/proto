@@ -131,7 +131,7 @@ jobs:
           cd /tmp/proto-smoke
           cat .prototools
           proto install -y
-          proto list
+          proto status
 
 
   build-and-deploy:
