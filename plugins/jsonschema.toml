@@ -1,19 +1,18 @@
-# plugins/jsonschema.toml
-# Proto TOML plugin for the jsonschema CLI (Rust crate)
-# Releases: https://github.com/Stranger6667/jsonschema/releases
-#
-# The repo is a monorepo; CLI releases are tagged cli-v{version}.
-# git-tag-pattern strips the prefix and captures semver groups.
-
 name = "jsonschema"
 type = "cli"
 description = "Fast JSON Schema validator with a CLI — supports drafts 4, 6, 7, 2019-09, and 2020-12"
 
 [platform.linux]
 download-file = "jsonschema-cli-{arch}-unknown-linux-gnu.tar.gz"
+exe-path = "jsonschema-cli"
 
 [platform.macos]
 download-file = "jsonschema-cli-{arch}-apple-darwin.tar.gz"
+exe-path = "jsonschema-cli"
+
+[platform.windows]
+download-file = "jsonschema-cli-{arch}-pc-windows-msvc.zip"
+exe-path = "jsonschema-cli.exe"
 
 [install]
 download-url = "https://github.com/Stranger6667/jsonschema/releases/download/cli-v{version}/{download_file}"
