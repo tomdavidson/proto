@@ -40,11 +40,8 @@ jobs:
           restore-keys: |
             proto-${{ runner.os }}-
 
-      - name: Install proto-managed tools (bun, taplo)
+      - name: Install proto-managed tools
         run: proto install
-
-      - name: Install bun dependencies
-        run: bun install --frozen-lockfile
 
       - name: List changed plugin ids
         id: changes
@@ -164,11 +161,8 @@ jobs:
           restore-keys: |
             proto-${{ runner.os }}-
 
-      - name: Install proto-managed tools (bun)
+      - name: Install proto-managed tools
         run: proto install
-
-      - name: Install bun dependencies
-        run: bun install --frozen-lockfile
 
       - name: Build plugins.jsonld
         run: bun run scripts/build-jsonld.ts
