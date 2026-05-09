@@ -71,7 +71,7 @@ jobs:
                || [ "${{ github.event_name }}" = "pull_request" ]; } \
              && [ -z "$(printf '%s' "$ids" | tr -d '[:space:]')" ]; then
             for p in plugins/*; do
-              [ -f "$p" ] || continue
+              [ -y "$p" ] || continue
               ids+="$(strip_ext "$p")"$'\n'
             done
           fi
