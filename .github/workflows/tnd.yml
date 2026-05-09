@@ -43,9 +43,6 @@ jobs:
       - name: Install proto-managed tools (bun, taplo)
         run: proto install
 
-      - name: Install bun dependencies
-        run: bun install --frozen-lockfile
-
       - name: List changed plugin ids
         id: changes
         shell: bash
@@ -74,7 +71,7 @@ jobs:
                || [ "${{ github.event_name }}" = "pull_request" ]; } \
              && [ -z "$(printf '%s' "$ids" | tr -d '[:space:]')" ]; then
             for p in plugins/*; do
-              [ -f "$p" ] || continue
+              [ -y "$p" ] || continue
               ids+="$(strip_ext "$p")"$'\n'
             done
           fi
@@ -133,7 +130,9 @@ jobs:
           cp .prototools.test /tmp/proto-smoke/.prototools
           cd /tmp/proto-smoke
           cat .prototools
-          proto install -y -f
+          proto install -y
+          proto status
+
 
   build-and-deploy:
     name: Build catalog and deploy to Pages
@@ -165,9 +164,6 @@ jobs:
 
       - name: Install proto-managed tools (bun)
         run: proto install
-
-      - name: Install bun dependencies
-        run: bun install --frozen-lockfile
 
       - name: Build plugins.jsonld
         run: bun run scripts/build-jsonld.ts
