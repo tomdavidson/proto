@@ -1,3 +1,6 @@
+# Repo toolchain only (bun, taplo, dprint, shfmt) — not a plugin registry. 
+# Do not add new plugins here.
+
 bun    = "1.2.13"
 dprint = "0.50.0"
 shfmt  = "3.13.0"

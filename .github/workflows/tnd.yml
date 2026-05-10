@@ -133,7 +133,6 @@ jobs:
           proto install -y
           proto status
 
-
   build-and-deploy:
     name: Build catalog and deploy to Pages
     needs: test-plugins
