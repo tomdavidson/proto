@@ -1,9 +1,11 @@
-bun    = "1.2.13"
-dprint = "0.50.0"
-shfmt  = "3.13.0"
-taplo  = "0.10.0"
+bun      = "1.2.13"
+dprint   = "0.50.0"
+shfmt    = "3.13.0"
+spectral = "6.15.0"
+taplo    = "0.10.0"
 
 [plugins]
-dprint = "source:plugins/dprint.toml"
-shfmt  = "source:plugins/shfmt.toml"
-taplo  = "source:plugins/taplo.toml"
+dprint   = "source:plugins/dprint.toml"
+shfmt    = "source:plugins/shfmt.toml"
+spectral = "source:plugins/spectral.toml"
+taplo    = "source:plugins/taplo.toml"
