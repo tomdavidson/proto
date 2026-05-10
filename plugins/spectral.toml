@@ -25,5 +25,10 @@ download-url = "https://github.com/stoplightio/spectral/releases/download/v{vers
 aarch64 = "arm64"
 x86_64  = "x64"
 
+[install.exes.spectral]
+exe-path = "{download_file}"
+primary  = true
+
 [resolve]
 git-url = "https://github.com/stoplightio/spectral"
+git-tag-pattern = "^v?(\\d+\\.\\d+\\.\\d+)$"
