@@ -1,0 +1,29 @@
+# A TOML plugin for Spectral CLI:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/stoplightio/spectral
+
+name        = "Spectral"
+type        = "cli"
+description = "OpenAPI, AsyncAPI, and Arazzo linter and validation CLI by Stoplight"
+
+[platform.linux]
+download-file = "spectral-linux-{arch}"
+exe-path      = "spectral-linux-{arch}"
+
+[platform.macos]
+download-file = "spectral-macos-{arch}"
+exe-path      = "spectral-macos-{arch}"
+
+[platform.windows]
+download-file = "spectral.exe"
+exe-path      = "spectral.exe"
+
+[install]
+download-url = "https://github.com/stoplightio/spectral/releases/download/v{version}/{download_file}"
+
+[install.arch]
+aarch64 = "arm64"
+x86_64  = "x64"
+
+[resolve]
+git-url = "https://github.com/stoplightio/spectral"
