@@ -38,7 +38,7 @@ jobs:
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: true
-          
+
       - name: Resolve test targets
         id: targets
         shell: bash
@@ -47,17 +47,21 @@ jobs:
       - name: Schema check
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/schema-check.sh ${{ steps.targets.outputs.ids }}
+        run: |
+          bash scripts/schema-check.sh ${{ steps.targets.outputs.ids }}
 
       - name: Install targeted plugins
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/smoke-install.sh ${{ steps.targets.outputs.ids }}
+        run: |
+          bash scripts/smoke-install.sh ${{ steps.targets.outputs.ids }}
 
       - name: Smoke-test executables
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}
+        working-directory: /tmp/proto-smoke
+        run: |
+          bash ${{ github.workspace }}/scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}
 
       - name: Build plugin catalog
         if: github.event_name == 'push'
