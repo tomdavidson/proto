@@ -1,23 +1,28 @@
 #!/usr/bin/env bash
 # Usage:
-#   ./scripts/smoke-test.sh                            # test all plugins
-#   ./scripts/smoke-test.sh taplo                      # test one plugin
-#   ./scripts/smoke-test.sh taplo gh                   # test multiple plugins
-#   ./scripts/smoke-test.sh $CHANGED                   # from an env var
-#   bash scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}  # from CI step output
+#   ./scripts/smoke-test.sh                  # test all plugins
+#   ./scripts/smoke-test.sh taplo            # test one plugin
+#   ./scripts/smoke-test.sh taplo gh         # test multiple plugins
+#   TARGETS="taplo gh" ./scripts/smoke-test.sh   # via env var (CI-friendly)
 #
-# Expects to run from the repo root with proto on PATH.
+# Expects proto on PATH.  Can be run from any working directory.
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 fail() {
   echo "  FAIL: $*"
   exit 1
 }
 
+# Arg priority: positional args > TARGETS env var > all plugins
 if [ $# -gt 0 ]; then
   targets="$*"
+elif [ -n "${TARGETS:-}" ]; then
+  targets="$TARGETS"
 else
-  targets=$(for p in plugins/*; do
+  targets=$(for p in "$REPO_ROOT/plugins/"*; do
     [ -f "$p" ] || continue
     name="${p##*/}"
     printf '%s\n' "${name%.*}"
@@ -27,13 +32,14 @@ fi
 for id in $targets; do
   [ -z "$id" ] && continue
 
-  # find the plugin file
+  # Locate plugin file relative to repo root, not cwd
   plugin_file=""
   for ext in toml yaml yml; do
-    [ -f "plugins/$id.$ext" ] && plugin_file="plugins/$id.$ext" && break
+    candidate="$REPO_ROOT/plugins/$id.$ext"
+    [ -f "$candidate" ] && plugin_file="$candidate" && break
   done
 
-  # skip library tools that have no binary
+  # Skip library tools that have no binary
   if [ -n "$plugin_file" ] && grep -qF 'no-bin = true' "$plugin_file"; then
     echo "--- $id (skipped: no-bin) ---"
     continue
