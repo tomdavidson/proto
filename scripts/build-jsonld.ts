@@ -195,7 +195,7 @@ const files = (await readdir(pluginsDir)).filter(file => PLUGIN_EXTENSIONS.has(e
 
 const plugins = await Promise.all(files.map(async file => {
   const text = await readFile(join(pluginsDir, file), 'utf8')
-  const raw = parsePluginFile(file, raw)
+  const raw = parsePluginFile(file, text)
   return toPlugin(baseUrl)(file, raw)
 }))
 
