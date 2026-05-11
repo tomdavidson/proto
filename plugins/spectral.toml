@@ -20,6 +20,7 @@ exe-path = "spectral.exe"
 
 [install]
 download-url = "https://github.com/stoplightio/spectral/releases/download/v{version}/{download_file}"
+no-unpack = true
 
 [install.arch]
 aarch64 = "arm64"

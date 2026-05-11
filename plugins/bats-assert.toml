@@ -1,6 +1,14 @@
+# A TOML plugin for bats-assert:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/bats-core/bats-assert
+#
+# bats-assert is a shell library sourced by bats tests — it has no executable binary.
+# proto manages its version and install location; bats loads it via BATS_LIB_PATH.
+
 name = "Bats Assert"
 type = "cli"
 description = "bats-assert provides assertion helpers (assert_success, assert_output, refute_output, etc.) for Bats"
+no-bin = true
 
 [platform.linux]
 archive-prefix = "bats-assert-{version}"
