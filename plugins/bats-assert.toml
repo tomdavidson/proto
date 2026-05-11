@@ -8,7 +8,6 @@
 name = "Bats Assert"
 type = "cli"
 description = "bats-assert provides assertion helpers (assert_success, assert_output, refute_output, etc.) for Bats"
-no-bin = true
 
 [platform.linux]
 archive-prefix = "bats-assert-{version}"
@@ -24,6 +23,8 @@ download-file = "v{version}.tar.gz"
 
 [install]
 download-url = "https://github.com/bats-core/bats-assert/archive/refs/tags/{download_file}"
+no-bin = true
+no-shim = true
 
 [resolve]
 git-url = "https://github.com/bats-core/bats-assert"

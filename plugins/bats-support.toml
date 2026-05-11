@@ -2,13 +2,12 @@
 # https://moonrepo.dev/docs/proto/plugins#toml-plugin
 # https://github.com/bats-core/bats-support
 #
-# bats-support is a shell library sourced by bats-assert and bats-file — it has no executable binary.
+# bats-support is a shell library sourced by bats tests — it has no executable binary.
 # proto manages its version and install location; bats loads it via BATS_LIB_PATH.
 
 name = "Bats Support"
 type = "cli"
-description = "bats-support provides the output/error formatting library that bats-assert and bats-file build on"
-no-bin = true
+description = "bats-support provides output formatting and helper functions for Bats test plugins"
 
 [platform.linux]
 archive-prefix = "bats-support-{version}"
@@ -24,6 +23,8 @@ download-file = "v{version}.tar.gz"
 
 [install]
 download-url = "https://github.com/bats-core/bats-support/archive/refs/tags/{download_file}"
+no-bin = true
+no-shim = true
 
 [resolve]
 git-url = "https://github.com/bats-core/bats-support"
