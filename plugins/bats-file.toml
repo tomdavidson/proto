@@ -1,6 +1,13 @@
+# A TOML plugin for bats-file:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/bats-core/bats-file
+#
+# bats-file is a shell library sourced by bats tests — it has no executable binary.
+# proto manages its version and install location; bats loads it via BATS_LIB_PATH.
+
 name = "Bats File"
 type = "cli"
-description = "bats-file provides filesystem assertion helpers (assert_file_exists, assert_symlink_to, assert_dir_exists, etc.) for Bats"
+description = "bats-file provides file-system assertion helpers for Bats"
 
 [platform.linux]
 archive-prefix = "bats-file-{version}"
@@ -16,6 +23,8 @@ download-file = "v{version}.tar.gz"
 
 [install]
 download-url = "https://github.com/bats-core/bats-file/archive/refs/tags/{download_file}"
+no-bin = true
+no-shim = true
 
 [resolve]
 git-url = "https://github.com/bats-core/bats-file"
