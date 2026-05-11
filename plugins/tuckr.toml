@@ -25,5 +25,8 @@ download-url = "https://github.com/RaphGL/Tuckr/releases/download/{version}/{dow
 aarch64 = "aarch64"
 x86_64 = "x86_64"
 
+[install.exes.tuckr]
+primary = true
+
 [resolve]
 git-url = "https://github.com/RaphGL/Tuckr"
