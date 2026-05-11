@@ -136,6 +136,17 @@ arm = "<arch string used in asset names>" # omit if tool does not ship arm32
 
 Only include arch entries for architectures the tool actually ships.
 
+For library/script tools with no executable, add to `[install]`:
+
+```toml
+[install]
+download-url = "..."
+no-bin = true
+no-shim = true
+```
+
+> **`no-bin` and `no-shim` must be under `[install]`, not at the root.** The root `Schema` struct has no such fields — placing them at the root is silently ignored, proto still attempts symlinks, and you get linker warnings on every install.
+
 ### `[detect]` block (optional)
 
 Add only if the tool has a conventional version pin file:
@@ -155,6 +166,7 @@ Before committing, verify:
 - [ ] `[install.arch]` values match the exact strings in release asset filenames
 - [ ] `exe-path` is set only for **archive** plugins where the binary is not at the root or not named `<id>`. **Never set `exe-path` for bare binaries** — proto renames the downloaded file to the tool name automatically; an `exe-path` override points to the pre-rename filename which no longer exists.
 - [ ] Bare binary downloads use `unpack = false` in `[install]`, not `no-unpack = true` (which is silently ignored)
+- [ ] Library/script plugins with no executable have `no-bin = true` and `no-shim = true` under `[install]`, not at the root (root placement is silently ignored)
 - [ ] `checksum-url` is present only if a checksums file is actually published
 - [ ] `git-tag-pattern` is set if tags are not standard `v1.2.3` / `1.2.3`
 - [ ] Comment header present
@@ -210,4 +222,15 @@ unpack = false
 
 ### No binary (library/script archive)
 
-`bats-assert` style — source archive from `archive/refs/tags/v{version}.tar.gz`. No `exe-path`. Use `archive-prefix` to normalize the extracted directory name. Set `no-bin = true` at the top level since there is no executable.
+`bats-assert` style — source archive from `archive/refs/tags/v{version}.tar.gz`. Use `archive-prefix` to normalize the extracted directory name. Set `no-bin = true` and `no-shim = true` under `[install]` (not at the root — root placement is silently ignored and causes linker warnings).
+
+```toml
+[platform.linux]
+archive-prefix = "tool-{version}"
+download-file = "v{version}.tar.gz"
+
+[install]
+download-url = "https://github.com/<owner>/<repo>/archive/refs/tags/{download_file}"
+no-bin = true
+no-shim = true
+```
