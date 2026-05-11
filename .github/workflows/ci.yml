@@ -68,7 +68,7 @@ jobs:
         working-directory: /tmp/proto-smoke
         env:
           TARGETS: ${{ steps.targets.outputs.ids }}
-        run: bash ${{ github.workspace }}/scripts/smoke-test.sh $TARGETS
+        run: bash ${{ github.workspace }}/scripts/smoke-test.sh
 
       - name: Assemble site
         if: github.event_name == 'push'
