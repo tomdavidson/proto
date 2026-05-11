@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
+jobs:
+  ci:
+    name: Test and publish plugins
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && 'github-pages' || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache .proto toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.proto
+          key: proto-${{ runner.os }}-${{ hashFiles('.prototools') }}
+          restore-keys: |
+            proto-${{ runner.os }}-
+
+      - name: Install proto
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Schema check
+        if: steps.targets.outputs.ids != ''
+        shell: bash
+        run: bash scripts/schema-check.sh ${{ steps.targets.outputs.ids }}
+
+      - name: Install targeted plugins
+        if: steps.targets.outputs.ids != ''
+        shell: bash
+        run: bash scripts/smoke-install.sh ${{ steps.targets.outputs.ids }}
+
+      - name: Smoke-test executables
+        if: steps.targets.outputs.ids != ''
+        shell: bash
+        run: bash scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}
+
+      - name: Build plugin catalog
+        if: steps.targets.outputs.ids != ''
+        run: bun run scripts/build-jsonld.ts
+
+      - name: Assemble site
+        if: github.event_name == 'push'
+        run: bash scripts/assemble-site.sh
+
+      - name: Configure Pages
+        if: github.event_name == 'push'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'push'
+        id: deployment
+        uses: actions/deploy-pages@v4

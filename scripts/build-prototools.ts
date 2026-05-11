@@ -22,13 +22,9 @@ const changed = (process.env.CHANGED ?? '').split(/\s+/).filter(Boolean)
 const catalog = JSON.parse(await readFile(catalogFile, 'utf8')) as Catalog
 const plugins = Array.isArray(catalog.plugins) ? catalog.plugins : []
 
-const filenameFromUrl = (url: string) => {
-  try {
-    return new URL(url).pathname.split('/').pop() ?? ''
-  } catch {
-    return url.split('/').pop() ?? ''
-  }
-}
+const filenameFromUrl = (url: string) =>
+  (url.startsWith('http://') || url.startsWith('https://') ? new URL(url).pathname : url).split('/').pop() ??
+    ''
 
 const toEntry = (plugin: Entry) => {
   const id = plugin.identifier
