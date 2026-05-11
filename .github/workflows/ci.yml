@@ -39,24 +39,36 @@ jobs:
         with:
           auto-install: true
 
+      - name: Resolve test targets
+        id: targets
+        shell: bash
+        run: bash scripts/resolve-targets.sh
+
       - name: Schema check
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/schema-check.sh ${{ steps.targets.outputs.ids }}
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash scripts/schema-check.sh $TARGETS
+
+      - name: Build plugin catalog
+        if: steps.targets.outputs.ids != '' || github.event_name == 'push'
+        run: bun run scripts/build-jsonld.ts
 
       - name: Install targeted plugins
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/smoke-install.sh ${{ steps.targets.outputs.ids }}
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash scripts/smoke-install.sh $TARGETS
 
       - name: Smoke-test executables
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: bash scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}
-
-      - name: Build plugin catalog
-        if: steps.targets.outputs.ids != ''
-        run: bun run scripts/build-jsonld.ts
+        working-directory: /tmp/proto-smoke
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash ${{ github.workspace }}/scripts/smoke-test.sh $TARGETS
 
       - name: Assemble site
         if: github.event_name == 'push'
