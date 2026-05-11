@@ -27,6 +27,18 @@ fi
 for id in $targets; do
   [ -z "$id" ] && continue
 
+  # find the plugin file
+  plugin_file=""
+  for ext in toml yaml yml; do
+    [ -f "plugins/$id.$ext" ] && plugin_file="plugins/$id.$ext" && break
+  done
+
+  # skip library tools that have no binary
+  if [ -n "$plugin_file" ] && grep -q 'no-bin\s*=\s*true' "$plugin_file"; then
+    echo "--- $id (skipped: no-bin) ---"
+    continue
+  fi
+
   echo "--- $id ---"
 
   bin=$(proto bin "$id") ||
