@@ -47,21 +47,24 @@ jobs:
       - name: Schema check
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: |
-          bash scripts/schema-check.sh ${{ steps.targets.outputs.ids }}
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash scripts/schema-check.sh $TARGETS
 
       - name: Install targeted plugins
         if: steps.targets.outputs.ids != ''
         shell: bash
-        run: |
-          bash scripts/smoke-install.sh ${{ steps.targets.outputs.ids }}
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash scripts/smoke-install.sh $TARGETS
 
       - name: Smoke-test executables
         if: steps.targets.outputs.ids != ''
         shell: bash
         working-directory: /tmp/proto-smoke
-        run: |
-          bash ${{ github.workspace }}/scripts/smoke-test.sh ${{ steps.targets.outputs.ids }}
+        env:
+          TARGETS: ${{ steps.targets.outputs.ids }}
+        run: bash ${{ github.workspace }}/scripts/smoke-test.sh $TARGETS
 
       - name: Build plugin catalog
         if: github.event_name == 'push'
