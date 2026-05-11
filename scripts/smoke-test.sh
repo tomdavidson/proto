@@ -29,8 +29,8 @@ while IFS= read -r id; do
 
   echo "--- $id ---"
 
-  bin=$(proto locate "$id") ||
-    fail "proto locate exited non-zero"
+  bin=$(proto bin "$id") ||
+    fail "proto bin exited non-zero"
 
   [[ $bin == *"/.proto/tools/$id/"* ]] ||
     fail "resolved outside .proto/tools: $bin"
