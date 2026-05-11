@@ -197,31 +197,24 @@
     }
 
     .cmd-block {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
       background: var(--surface-offset);
       border-radius: var(--r-sm);
       border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.5rem 0.75rem;
       font-family: var(--font-mono);
       font-size: 0.8rem;
       line-height: 1.4;
       color: var(--text);
-      overflow: hidden;
-    }
-
-    .cmd-line {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
       overflow-x: auto;
     }
 
-    .cmd-line + .cmd-line {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .cmd-line code {
+    .cmd-block pre {
       flex: 1;
-      white-space: nowrap;
+      white-space: pre;
+      margin: 0;
     }
 
     .copy-btn {
@@ -444,24 +437,14 @@
         return btn
       }
 
-      const makeCmdLine = (cmd, ariaLabel) => {
-        const line = makeEl('div', 'cmd-line')
-        line.append(makeEl('code', '', cmd), makeCopyButton(cmd, ariaLabel))
-        return line
-      }
-
       const makeCmdBlock = plugin => {
+        const addCmd = plugin.addCommand ?? ''
+        const installCmd = plugin.installCommand ?? ''
+        const combined = `${addCmd}\n${installCmd}`
         const block = makeEl('div', 'cmd-block')
-        block.append(
-          makeCmdLine(
-            plugin.addCommand ?? '',
-            `Copy add command for ${plugin.identifier ?? ''}`,
-          ),
-          makeCmdLine(
-            plugin.installCommand ?? '',
-            `Copy install command for ${plugin.identifier ?? ''}`,
-          ),
-        )
+        const pre = document.createElement('pre')
+        pre.textContent = combined
+        block.append(pre, makeCopyButton(combined, `Copy commands for ${plugin.identifier ?? ''}`))
         return block
       }
 
