@@ -8,18 +8,16 @@ description = "OpenAPI, AsyncAPI, and Arazzo linter and validation CLI by Stopli
 
 [platform.linux]
 download-file = "spectral-linux-{arch}"
-exe-path = "spectral-linux-{arch}"
 
 [platform.macos]
 download-file = "spectral-macos-{arch}"
-exe-path = "spectral-macos-{arch}"
 
 [platform.windows]
 download-file = "spectral.exe"
-exe-path = "spectral.exe"
 
 [install]
 download-url = "https://github.com/stoplightio/spectral/releases/download/v{version}/{download_file}"
+unpack = false
 
 [install.arch]
 aarch64 = "arm64"

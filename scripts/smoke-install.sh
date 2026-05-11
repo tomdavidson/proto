@@ -7,4 +7,4 @@ cp .prototools.test /tmp/proto-smoke/.prototools
 cd /tmp/proto-smoke
 cat .prototools
 proto install -y
-proto status
+proto status --json
