@@ -24,7 +24,7 @@ else
   done)
 fi
 
-while IFS= read -r id; do
+for id in $targets; do
   [ -z "$id" ] && continue
 
   echo "--- $id ---"
@@ -40,4 +40,4 @@ while IFS= read -r id; do
 
   echo "  OK: $bin"
 
-done <<< "$targets"
+done
