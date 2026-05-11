@@ -196,6 +196,12 @@
       display: none;
     }
 
+    .cmd-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
     .cmd-row {
       display: flex;
       align-items: center;
@@ -427,20 +433,32 @@
         return host
       }
 
-      const makeCopyButton = plugin => {
+      const makeCopyButton = (cmd, label) => {
         const btn = makeEl('button', 'copy-btn')
         btn.type = 'button'
-        btn.dataset.cmd = plugin.addCommand ?? ''
-        btn.setAttribute('aria-label', `Copy command for ${plugin.identifier ?? ''}`)
+        btn.dataset.cmd = cmd
+        btn.setAttribute('aria-label', label)
         setIcon(btn, iconCopyTpl)
         return btn
       }
 
-      const makeCmdRow = plugin => {
+      const makeCmdRow = (cmd, ariaLabel) => {
         const row = makeEl('div', 'cmd-row')
-        row.append(makeEl('code', '', plugin.addCommand ?? ''), makeCopyButton(plugin))
+        row.append(makeEl('code', '', cmd), makeCopyButton(cmd, ariaLabel))
         return row
       }
+
+      const makeAddRow = plugin =>
+        makeCmdRow(
+          plugin.addCommand ?? '',
+          `Copy add command for ${plugin.identifier ?? ''}`,
+        )
+
+      const makeInstallRow = plugin =>
+        makeCmdRow(
+          plugin.installCommand ?? '',
+          `Copy install command for ${plugin.identifier ?? ''}`,
+        )
 
       const makePluginFileLink = plugin => {
         const link = makeEl('a', 'plugin-file-link', pluginFileName(plugin))
@@ -460,10 +478,12 @@
 
       const buildCard = plugin => {
         const card = makeEl('article', 'card')
+        const cmdRows = makeEl('div', 'cmd-rows')
+        cmdRows.append(makeAddRow(plugin), makeInstallRow(plugin))
         card.append(
           makeHead(plugin),
           makeEl('p', 'card-desc', plugin.description ?? ''),
-          makeCmdRow(plugin),
+          cmdRows,
           makePluginFileLink(plugin),
         )
         return card

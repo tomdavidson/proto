@@ -20,6 +20,7 @@ type Plugin = {
   versionSource: string
   hasPackages: boolean
   addCommand: string
+  installCommand: string
 }
 
 const DEFAULT_OSES = ['Linux', 'macOS', 'Windows']
@@ -131,6 +132,7 @@ const toPlugin = (baseUrl: string) => (file: string, raw: Raw): Plugin => {
     versionSource: detectVersionSource(resolveBlock),
     hasPackages: isObject(raw.packages),
     addCommand: `proto plugin add ${id} "${fileUrl}"`,
+    installCommand: `proto install --pin -c local ${id} latest`,
   }
 }
 
@@ -152,6 +154,7 @@ const toPluginEntry = (repoUrl: string, schemaUrl: string) => (plugin: Plugin) =
     versionSource: plugin.versionSource,
     hasPackages: plugin.hasPackages,
     addCommand: plugin.addCommand,
+    installCommand: plugin.installCommand,
   })
 
 const toCatalog = (
@@ -192,7 +195,7 @@ const files = (await readdir(pluginsDir)).filter(file => PLUGIN_EXTENSIONS.has(e
 
 const plugins = await Promise.all(files.map(async file => {
   const text = await readFile(join(pluginsDir, file), 'utf8')
-  const raw = parsePluginFile(file, text)
+  const raw = parsePluginFile(file, raw)
   return toPlugin(baseUrl)(file, raw)
 }))
 
