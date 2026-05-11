@@ -196,28 +196,30 @@
       display: none;
     }
 
-    .cmd-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-
-    .cmd-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .cmd-block {
       background: var(--surface-offset);
       border-radius: var(--r-sm);
-      padding: 0.5rem 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
       font-family: var(--font-mono);
       font-size: 0.8rem;
       line-height: 1.4;
       color: var(--text);
-      overflow-x: auto;
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      overflow: hidden;
     }
 
-    .cmd-row code {
+    .cmd-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      overflow-x: auto;
+    }
+
+    .cmd-line + .cmd-line {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .cmd-line code {
       flex: 1;
       white-space: nowrap;
     }
@@ -442,23 +444,26 @@
         return btn
       }
 
-      const makeCmdRow = (cmd, ariaLabel) => {
-        const row = makeEl('div', 'cmd-row')
-        row.append(makeEl('code', '', cmd), makeCopyButton(cmd, ariaLabel))
-        return row
+      const makeCmdLine = (cmd, ariaLabel) => {
+        const line = makeEl('div', 'cmd-line')
+        line.append(makeEl('code', '', cmd), makeCopyButton(cmd, ariaLabel))
+        return line
       }
 
-      const makeAddRow = plugin =>
-        makeCmdRow(
-          plugin.addCommand ?? '',
-          `Copy add command for ${plugin.identifier ?? ''}`,
+      const makeCmdBlock = plugin => {
+        const block = makeEl('div', 'cmd-block')
+        block.append(
+          makeCmdLine(
+            plugin.addCommand ?? '',
+            `Copy add command for ${plugin.identifier ?? ''}`,
+          ),
+          makeCmdLine(
+            plugin.installCommand ?? '',
+            `Copy install command for ${plugin.identifier ?? ''}`,
+          ),
         )
-
-      const makeInstallRow = plugin =>
-        makeCmdRow(
-          plugin.installCommand ?? '',
-          `Copy install command for ${plugin.identifier ?? ''}`,
-        )
+        return block
+      }
 
       const makePluginFileLink = plugin => {
         const link = makeEl('a', 'plugin-file-link', pluginFileName(plugin))
@@ -478,12 +483,10 @@
 
       const buildCard = plugin => {
         const card = makeEl('article', 'card')
-        const cmdRows = makeEl('div', 'cmd-rows')
-        cmdRows.append(makeAddRow(plugin), makeInstallRow(plugin))
         card.append(
           makeHead(plugin),
           makeEl('p', 'card-desc', plugin.description ?? ''),
-          cmdRows,
+          makeCmdBlock(plugin),
           makePluginFileLink(plugin),
         )
         return card
