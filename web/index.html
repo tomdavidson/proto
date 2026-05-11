@@ -196,30 +196,25 @@
       display: none;
     }
 
-    .cmd-rows {
+    .cmd-block {
       display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-
-    .cmd-row {
-      display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.5rem;
       background: var(--surface-offset);
       border-radius: var(--r-sm);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       padding: 0.5rem 0.75rem;
       font-family: var(--font-mono);
       font-size: 0.8rem;
-      line-height: 1.4;
+      line-height: 1.6;
       color: var(--text);
       overflow-x: auto;
-      border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .cmd-row code {
+    .cmd-block pre {
       flex: 1;
-      white-space: nowrap;
+      white-space: pre;
+      margin: 0;
     }
 
     .copy-btn {
@@ -282,26 +277,16 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .card {
-        transition: none;
-      }
-      .card:hover {
-        transform: none;
-      }
+      .card { transition: none; }
+      .card:hover { transform: none; }
     }
 
     @media (max-width: 520px) {
-      body {
-        padding-top: 1.5rem;
-      }
-      .card {
-        padding: 0.9rem 1rem;
-      }
+      body { padding-top: 1.5rem; }
+      .card { padding: 0.9rem 1rem; }
     }
 
-    svg {
-      display: block;
-    }
+    svg { display: block; }
     </style>
   </head>
   <body>
@@ -313,15 +298,8 @@
             <span class="owner">tomdavidson</span>
           </h1>
           <p class="sub">
-            Non-WASM plugins for <a
-              href="https://moonrepo.dev/proto"
-              target="_blank"
-              rel="noopener noreferrer"
-            >proto</a>, a next-generation toolchain manager by <a
-              href="https://moonrepo.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >moonrepo</a>.
+            Non-WASM plugins for <a href="https://moonrepo.dev/proto" target="_blank" rel="noopener noreferrer">proto</a>,
+            a next-generation toolchain manager by <a href="https://moonrepo.dev/" target="_blank" rel="noopener noreferrer">moonrepo</a>.
           </p>
         </div>
       </header>
@@ -335,57 +313,28 @@
         <span>
           <a href="./plugins.jsonld">plugins.jsonld</a>
           · <a href="./schema/proto-plugin.schema.json">schema</a>
-          · <a href="https://github.com/tomdavidson/proto" target="_blank" rel="noopener noreferrer"
-          >source</a>
+          · <a href="https://github.com/tomdavidson/proto" target="_blank" rel="noopener noreferrer">source</a>
         </span>
         <span id="catalog-date"></span>
       </footer>
     </div>
 
-    <template id="icon-copy"><svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <rect x="9" y="9" width="13" height="13" rx="2" />
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-      </svg></template>
-    <template id="icon-check"><svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <polyline points="20 6 9 17 4 12" />
-      </svg></template>
+    <template id="icon-copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></template>
+    <template id="icon-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></template>
 
     <script>
-    const COPY_RESET_MS = 1500
-
+      const COPY_RESET_MS = 1500
       const pluginsEl = document.getElementById('plugins')
       const loadingEl = document.getElementById('loading')
-      const errorEl = document.getElementById('error')
-      const metaEl = document.getElementById('catalog-meta')
-      const dateEl = document.getElementById('catalog-date')
-      const iconCopyTpl = document.getElementById('icon-copy')
+      const errorEl   = document.getElementById('error')
+      const metaEl    = document.getElementById('catalog-meta')
+      const dateEl    = document.getElementById('catalog-date')
+      const iconCopyTpl  = document.getElementById('icon-copy')
       const iconCheckTpl = document.getElementById('icon-check')
 
       const copyTimers = new WeakMap()
-
       const iconNode = tpl => tpl.content.firstElementChild.cloneNode(true)
-
-      const setIcon = (btn, tpl) => btn.replaceChildren(iconNode(tpl))
+      const setIcon  = (btn, tpl) => btn.replaceChildren(iconNode(tpl))
 
       const formatDate = value => {
         const d = new Date(value)
@@ -407,11 +356,8 @@
 
       const pluginFileName = plugin => {
         const url = pluginFileUrl(plugin)
-        try {
-          return new URL(url).pathname.split('/').pop() || `${plugin.identifier ?? 'plugin'}`
-        } catch {
-          return url.split('/').pop() || `${plugin.identifier ?? 'plugin'}`
-        }
+        try { return new URL(url).pathname.split('/').pop() || (plugin.identifier ?? 'plugin') }
+        catch { return url.split('/').pop() || (plugin.identifier ?? 'plugin') }
       }
 
       const makeNameNode = plugin => {
@@ -433,32 +379,19 @@
         return host
       }
 
-      const makeCopyButton = (cmd, label) => {
+      const makeCmdBlock = plugin => {
+        const cmd = plugin.addCommand ?? ''
+        const block = makeEl('div', 'cmd-block')
+        const pre = document.createElement('pre')
+        pre.textContent = cmd
         const btn = makeEl('button', 'copy-btn')
         btn.type = 'button'
         btn.dataset.cmd = cmd
-        btn.setAttribute('aria-label', label)
+        btn.setAttribute('aria-label', `Copy commands for ${plugin.identifier ?? ''}`)
         setIcon(btn, iconCopyTpl)
-        return btn
+        block.append(pre, btn)
+        return block
       }
-
-      const makeCmdRow = (cmd, ariaLabel) => {
-        const row = makeEl('div', 'cmd-row')
-        row.append(makeEl('code', '', cmd), makeCopyButton(cmd, ariaLabel))
-        return row
-      }
-
-      const makeAddRow = plugin =>
-        makeCmdRow(
-          plugin.addCommand ?? '',
-          `Copy add command for ${plugin.identifier ?? ''}`,
-        )
-
-      const makeInstallRow = plugin =>
-        makeCmdRow(
-          plugin.installCommand ?? '',
-          `Copy install command for ${plugin.identifier ?? ''}`,
-        )
 
       const makePluginFileLink = plugin => {
         const link = makeEl('a', 'plugin-file-link', pluginFileName(plugin))
@@ -468,31 +401,22 @@
         return link
       }
 
-      const makeHead = plugin => {
+      const buildCard = plugin => {
+        const card = makeEl('article', 'card')
         const head = makeEl('div', 'card-head')
         const title = makeEl('div', 'card-title')
         title.append(makeNameNode(plugin), makeEl('span', 'card-id', plugin.identifier ?? ''))
         head.append(title, makeMetaNode(plugin))
-        return head
-      }
-
-      const buildCard = plugin => {
-        const card = makeEl('article', 'card')
-        const cmdRows = makeEl('div', 'cmd-rows')
-        cmdRows.append(makeAddRow(plugin), makeInstallRow(plugin))
         card.append(
-          makeHead(plugin),
+          head,
           makeEl('p', 'card-desc', plugin.description ?? ''),
-          cmdRows,
+          makeCmdBlock(plugin),
           makePluginFileLink(plugin),
         )
         return card
       }
 
-      const resetCopyIcon = btn => {
-        setIcon(btn, iconCopyTpl)
-        copyTimers.delete(btn)
-      }
+      const resetCopyIcon = btn => { setIcon(btn, iconCopyTpl); copyTimers.delete(btn) }
 
       const markCopied = btn => {
         setIcon(btn, iconCheckTpl)
@@ -501,15 +425,12 @@
         copyTimers.set(btn, setTimeout(() => resetCopyIcon(btn), COPY_RESET_MS))
       }
 
-      const onCopyClick = btn => {
+      pluginsEl.addEventListener('click', event => {
+        const btn = event.target.closest('.copy-btn')
+        if (!btn) return
         const cmd = btn.dataset.cmd || ''
         if (!cmd) return
         navigator.clipboard.writeText(cmd).then(() => markCopied(btn)).catch(() => {})
-      }
-
-      pluginsEl.addEventListener('click', event => {
-        const btn = event.target.closest('.copy-btn')
-        if (btn) onCopyClick(btn)
       })
 
       const render = feed => {
@@ -530,9 +451,10 @@
         errorEl.textContent = `Failed to load plugins.jsonld: ${message}`
       }
 
-      fetch('./plugins.jsonld').then(res =>
-        res.ok ? res.json() : Promise.reject(new Error(`${res.status} ${res.statusText}`))
-      ).then(render).catch(e => showError(e?.message ?? String(e)))
+      fetch('./plugins.jsonld')
+        .then(res => res.ok ? res.json() : Promise.reject(new Error(`${res.status} ${res.statusText}`)))
+        .then(render)
+        .catch(e => showError(e?.message ?? String(e)))
     </script>
   </body>
 </html>
