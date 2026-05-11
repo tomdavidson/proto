@@ -38,7 +38,7 @@ Given a URL (repo, homepage, or release page), determine:
    - `{tool}_{version}_linux_{arch}.tar.gz` with `darwin` for macOS — platform-literal
    - `{tool}-{arch}-unknown-linux-gnu.tar.gz` — Rust target triple
    - `v{version}.tar.gz` from `archive/refs/tags/` — source archive (no binary, library/script tools)
-   - Bare binary with no version in filename (e.g. `spectral-linux-x64`) — use `download-file` and `exe-path` with only `{arch}`
+   - Bare binary with no version in filename (e.g. `spectral-linux-x64`) — use `download-file` with `{arch}`, set `unpack = false`, omit `exe-path`
 4. **Arch strings used** — check what arch labels appear in asset names (`amd64`, `arm64`, `x86_64`, `aarch64`, `x64`, `386`, `armv6`, etc.).
 5. **Binary location inside archive** — does the binary sit at the archive root, or inside a subdirectory? If inside a subdirectory, note the path. If not an archive at all (bare binary), note that.
 6. **Checksum file** — does the release include a checksums file? Note its name pattern. Many tools do not.
@@ -88,7 +88,7 @@ Add one block **per OS that actually has release assets**. Never add a platform 
 [platform.linux]
 download-file = "<asset name with {version} and/or {arch} placeholders>"
 checksum-file = "<checksum asset name>" # omit if no checksums published
-exe-path = "<path/to/binary>" # omit if binary is at archive root with the tool name
+exe-path = "<path/to/binary>" # omit if binary is at archive root with the tool name, or if bare binary (see below)
 
 [platform.macos]
 download-file = "<asset name>"
@@ -153,7 +153,8 @@ Before committing, verify:
 
 - [ ] Platform blocks exist **only** for OSes with actual release assets
 - [ ] `[install.arch]` values match the exact strings in release asset filenames
-- [ ] `exe-path` is set if the binary is not at the archive root or is not named exactly `<id>` (or `<id>.exe` on Windows)
+- [ ] `exe-path` is set only for **archive** plugins where the binary is not at the root or not named `<id>`. **Never set `exe-path` for bare binaries** — proto renames the downloaded file to the tool name automatically; an `exe-path` override points to the pre-rename filename which no longer exists.
+- [ ] Bare binary downloads use `unpack = false` in `[install]`, not `no-unpack = true` (which is silently ignored)
 - [ ] `checksum-url` is present only if a checksums file is actually published
 - [ ] `git-tag-pattern` is set if tags are not standard `v1.2.3` / `1.2.3`
 - [ ] Comment header present
@@ -196,8 +197,17 @@ The CI workflow does the following on every PR:
 
 ### Bare binary (no archive, no version in filename)
 
-`spectral` style — assets named `tool-linux-x64` with no version embedded. Use `download-file` and `exe-path` with only `{arch}`. Proto marks the downloaded file executable automatically.
+`spectral` style — assets named `tool-linux-x64` with no version embedded. Use `download-file` with `{arch}` and set `unpack = false` in `[install]`. **Do not set `exe-path`** — proto renames the downloaded file to the tool name automatically. Adding `exe-path` causes it to look for the original filename, which no longer exists.
+
+```toml
+[platform.linux]
+download-file = "tool-linux-{arch}"
+
+[install]
+download-url = "https://github.com/<owner>/<repo>/releases/download/v{version}/{download_file}"
+unpack = false
+```
 
 ### No binary (library/script archive)
 
-`bats-assert` style — source archive from `archive/refs/tags/v{version}.tar.gz`. No `exe-path`. Use `archive-prefix` to normalize the extracted directory name.
+`bats-assert` style — source archive from `archive/refs/tags/v{version}.tar.gz`. No `exe-path`. Use `archive-prefix` to normalize the extracted directory name. Set `no-bin = true` at the top level since there is no executable.
