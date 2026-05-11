@@ -34,7 +34,7 @@ for id in $targets; do
   done
 
   # skip library tools that have no binary
-  if [ -n "$plugin_file" ] && grep -q 'no-bin\s*=\s*true' "$plugin_file"; then
+  if [ -n "$plugin_file" ] && grep -qF 'no-bin = true' "$plugin_file"; then
     echo "--- $id (skipped: no-bin) ---"
     continue
   fi
