@@ -1,0 +1,27 @@
+# A TOML plugin for mcp-tester:
+# https://moonrepo.dev/docs/proto/plugins#toml-plugin
+# https://github.com/paiml/rust-mcp-sdk
+
+name = "mcp-tester"
+type = "cli"
+description = "MCP protocol conformance validator and testing CLI from the paiml rust-mcp-sdk."
+
+[resolve]
+git-url = "https://github.com/paiml/rust-mcp-sdk"
+
+[platform.linux]
+download-file = "mcp-tester-{arch}-unknown-linux-gnu"
+
+[platform.macos]
+download-file = "mcp-tester-{arch}-apple-darwin"
+
+[platform.windows]
+download-file = "mcp-tester-{arch}-pc-windows-msvc.exe"
+
+[install]
+download-url = "https://github.com/paiml/rust-mcp-sdk/releases/download/v{version}/{download_file}"
+unpack = false
+
+[install.arch]
+aarch64 = "aarch64"
+x86_64 = "x86_64"
