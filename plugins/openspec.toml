@@ -1,0 +1,30 @@
+name = "OpenSpec"
+type = "cli"
+description = "Spec-driven development CLI for AI coding assistants"
+
+[platform.linux]
+download-file = "openspec-linux-{arch}{libc}.tar.gz"
+checksum-file = "SHA256SUMS"
+
+[platform.macos]
+download-file = "openspec-darwin-{arch}.tar.gz"
+checksum-file = "SHA256SUMS"
+
+[platform.windows]
+download-file = "openspec-windows-{arch}.zip"
+checksum-file = "SHA256SUMS"
+
+[install]
+checksum-url = "https://github.com/Fission-AI/OpenSpec/releases/download/v{version}/{checksum_file}"
+download-url = "https://github.com/Fission-AI/OpenSpec/releases/download/v{version}/{download_file}"
+
+[install.arch]
+x86_64 = "x64"
+aarch64 = "arm64"
+
+[install.libc]
+gnu = ""
+musl = "-musl"
+
+[resolve]
+git-url = "https://github.com/Fission-AI/OpenSpec"
