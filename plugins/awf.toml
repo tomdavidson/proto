@@ -1,0 +1,25 @@
+name = "AWF"
+type = "cli"
+description = "AI Workflow Framework CLI for running YAML state machine workflows"
+
+[platform.linux]
+download-file = "awf_linux_{arch}.tar.gz"
+checksum-file = "checksums.txt"
+
+[platform.macos]
+download-file = "awf_darwin_{arch}.zip"
+checksum-file = "checksums.txt"
+
+[install]
+checksum-url = "https://github.com/awf-project/cli/releases/download/v{version}/{checksum_file}"
+download-url = "https://github.com/awf-project/cli/releases/download/v{version}/{download_file}"
+
+[install.arch]
+x86_64 = "amd64"
+aarch64 = "arm64"
+
+[metadata]
+self-upgrade-commands = ["upgrade"]
+
+[resolve]
+git-url = "https://github.com/awf-project/cli"
