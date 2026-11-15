@@ -1,0 +1,25 @@
+name = "microsandbox"
+type = "cli"
+description = "Local microVM sandboxes for AI agents and untrusted code"
+
+[resolve]
+git-url = "https://github.com/superradcompany/microsandbox"
+
+[platform.linux]
+archs = ["x86_64", "aarch64"]
+checksum-file = "checksums.sha256"
+download-file = "microsandbox-linux-{arch}.tar.gz"
+
+[platform.macos]
+archs = ["aarch64"]
+checksum-file = "checksums.sha256"
+download-file = "microsandbox-darwin-{arch}.tar.gz"
+
+[platform.windows]
+archs = ["x86_64", "aarch64"]
+checksum-file = "checksums.sha256"
+download-file = "microsandbox-windows-{arch}.zip"
+
+[install]
+checksum-url = "https://github.com/superradcompany/microsandbox/releases/download/v{version}/{checksum_file}"
+download-url = "https://github.com/superradcompany/microsandbox/releases/download/v{version}/{download_file}"
